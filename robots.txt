@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /kosik.html
+Disallow: /pokladna.html
+Disallow: /dakujeme.html
+Disallow: /en/cart.html
+Disallow: /en/checkout.html
+Disallow: /en/thank-you.html
+Disallow: /de/warenkorb.html
+Disallow: /de/kasse.html
+Disallow: /de/danke.html
+
+Sitemap: https://gelavit.sk/sitemap.xml
