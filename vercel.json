@@ -1,0 +1,204 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/produkty",
+      "destination": "/produkty.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-ananas",
+      "destination": "/produkt-gelavit-pure-ananas.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-vitamin-c",
+      "destination": "/produkt-gelavit-pure-vitamin-c.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-ananas-box",
+      "destination": "/produkt-gelavit-pure-ananas-box.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-lieskovy-orech",
+      "destination": "/produkt-gelavit-pure-lieskovy-orech.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-kokosove-mlieko",
+      "destination": "/produkt-gelavit-pure-kokosove-mlieko.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-pure-kolagenovy-napoj-mango",
+      "destination": "/produkt-gelavit-napoj-mango.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/gelavit-zele-mango",
+      "destination": "/produkt-gelavit-zele-mango.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkt/kolagenova-cokolada-s-kokosovym-mliekom",
+      "destination": "/produkt-kolagenova-cokolada-kokos.html",
+      "permanent": true
+    },
+    {
+      "source": "/o-nas",
+      "destination": "/o-nas.html",
+      "permanent": true
+    },
+    {
+      "source": "/kontakt",
+      "destination": "/kontakt.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html",
+      "permanent": true
+    },
+    {
+      "source": "/ako-objednat",
+      "destination": "/ako-objednat.html",
+      "permanent": true
+    },
+    {
+      "source": "/obchodne-podmienky",
+      "destination": "/obchodne-podmienky.html",
+      "permanent": true
+    },
+    {
+      "source": "/informacie",
+      "destination": "/ako-objednat.html",
+      "permanent": true
+    },
+    {
+      "source": "/kosik",
+      "destination": "/kosik.html",
+      "permanent": true
+    },
+    {
+      "source": "/pokladna",
+      "destination": "/pokladna.html",
+      "permanent": true
+    },
+    {
+      "source": "/moj-ucet",
+      "destination": "/kontakt.html",
+      "permanent": true
+    },
+    {
+      "source": "/products",
+      "destination": "/en/products.html",
+      "permanent": true
+    },
+    {
+      "source": "/about-us",
+      "destination": "/en/about-us.html",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/en/contact.html",
+      "permanent": true
+    },
+    {
+      "source": "/how-to-order",
+      "destination": "/en/how-to-order.html",
+      "permanent": true
+    },
+    {
+      "source": "/terms-and-conditions",
+      "destination": "/en/terms-and-conditions.html",
+      "permanent": true
+    },
+    {
+      "source": "/produkte",
+      "destination": "/de/produkte.html",
+      "permanent": true
+    },
+    {
+      "source": "/uber-uns",
+      "destination": "/de/ueber-uns.html",
+      "permanent": true
+    },
+    {
+      "source": "/wie-bestelle-ich",
+      "destination": "/de/wie-bestelle-ich.html",
+      "permanent": true
+    },
+    {
+      "source": "/agb-geschaftsbedingungen",
+      "destination": "/de/agb.html",
+      "permanent": true
+    },
+    {
+      "source": "/kolagen-nenahraditelna-bielkovina",
+      "destination": "/clanok-kolagen-nenahraditelna-bielkovina.html",
+      "permanent": true
+    },
+    {
+      "source": "/sukraloza-a-jej-pozitiva",
+      "destination": "/clanok-sukraloza-a-jej-pozitiva.html",
+      "permanent": true
+    },
+    {
+      "source": "/intenzivna-kolagenova-kura-gelavit-pure",
+      "destination": "/clanok-intenzivna-kolagenova-kura.html",
+      "permanent": true
+    },
+    {
+      "source": "/kolagen-pre-vsetkych-od-gelavitu-a-jeho-vyznam",
+      "destination": "/clanok-kolagen-pre-vsetkych-a-jeho-vyznam.html",
+      "permanent": true
+    },
+    {
+      "source": "/idealne-samostatne-balenia-na-vylety-ci-dovolenku",
+      "destination": "/clanok-samostatne-balenia-na-cesty.html",
+      "permanent": true
+    },
+    {
+      "source": "/vyhlasenie-o-zasadach-ochrany-osobnych-udajov%ef%bf%bc",
+      "destination": "/ochrana-osobnych-udajov.html",
+      "permanent": true
+    },
+    {
+      "source": "/personal-data-protection",
+      "destination": "/en/privacy-policy.html",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

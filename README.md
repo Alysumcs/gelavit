@@ -409,3 +409,56 @@ Bez experimentálnych vlastností. Kde by mohol byť problém, je záložka:
 - `textPath` má aj `xlink:href` pre staršie Safari
 - `localStorage` je celý v `try/catch` (súkromné okno Safari)
 - obrázky idú cez `<picture>`: WebP s JPG/PNG záložkou
+
+
+## Hero na veľkých obrazovkách a bočné nadpisy
+
+### Väčší nadpis a produkt
+
+Meta riadok (97 % / 5 g / 2015) a linka postupu scény sú od tejto verzie
+v samostatnom `.hero-foot`, ktorý je nad 980 px **ukotvený na spodok
+pripnutia** (`position: absolute`). Mriežka tak dostala celú výšku okna
+a nadpis aj produkt mohli narásť:
+
+| | predtým | teraz |
+|---|---|---|
+| Nadpis pri 1440 × 900 | 63 px / riadok | **75 px / riadok** |
+| Tvar s produktom pri 1440 × 900 | 414 px | **504 px** |
+| Nadpis pri 1280 × 720 | 34 px | **43 px** |
+| Tvar pri 1280 × 720 | 274 px | **324 px** |
+
+Veľkosti sú viazané na šírku **aj** výšku okna:
+`clamp(2.4rem, min(5.4vw, 8.6vh), 6.4rem)` pre nadpis a
+`min(580px, 56vh)` pre tvar. Na nízkych oknách ich blok 22.7 zmenší tak,
+aby sa scéna vždy zmestila na jednu obrazovku — overené na
+1024 × 700, 1280 × 720, 1440 × 900, 1680 × 1050 a 1920 × 1080.
+
+`.hero-foot` musí byť **mimo** `.hero-grid` — tá má `position: relative`,
+takže by inak bola kotvou pre absolútne umiestnenie namiesto `.hero-pin`.
+
+### Bočné nadpisy sa už neorezávajú
+
+Sekcie 02, 07, 09 a 10 mali stĺpce nastavené priamo v HTML
+(`style="grid-column:6/13"`), čo médiá dotazy nevedeli prebiť — na telefóne
+zostal nadpis v úzkom stĺpci a orezal sa uprostred písmena. Inline štýly
+nahradili triedy `.col-main` a `.col-aside`, ktoré sa pod 900 px roztiahnu
+na celú šírku. Doplnené je aj `overflow-wrap: break-word` na všetky nadpisy,
+takže sa dlhé slovo radšej zalomí, než by prečnievalo.
+
+
+## Nasadenie na Vercel
+
+Web beží na Vercel, kde **neplatí `.htaccess` ani `_redirects`** — tie sú pre
+Apache a Netlify. Presmerovania starých WordPress adries sa preto generujú aj
+do **`site/vercel.json`** (34 presmerovaní 301 plus bezpečnostné hlavičky
+a ročná cache na `/assets/`). Bez tohto súboru by staré odkazy z Googlu
+končili na 404 a web by prišiel o doteraz nazbieranú SEO hodnotu.
+
+Súbor musí byť v **koreni nasadenia** — teda tam, kde je `index.html`.
+
+## Rýchlosť generovania
+
+Vyrezávanie packshotov je morfologicky drahé (asi 15 s na obrázok), preto sa
+výsledok cachuje do `gen/.cache/` s časovou pečiatkou zdroja. Prvý beh trvá
+niekoľko minút, ďalšie asi minútu. Po výmene zdrojového packshotu sa jeho
+cache prepočíta sama; celú vieš zahodiť cez `rm -rf gen/.cache`.
