@@ -33,7 +33,7 @@
       <div class="info-card">
         <h3 style="font-size:1.2rem">{{ t.contact_billing }}</h3>
         <p style="margin-top:1rem;line-height:1.9">
-          <strong style="color:var(--brand)">Gelavit s. r. o.</strong><br>
+          <strong style="color:var(--acc)">Gelavit s. r. o.</strong><br>
           Kopčianska 8<br>851 01 Bratislava<br>{{ t.slovakia }}
         </p>
         <dl class="spec" style="margin-top:1.25rem">
@@ -45,7 +45,7 @@
         <p style="margin-top:1.25rem;line-height:1.9">
           <strong>Nina Bernardo</strong><br>
           <a href="tel:+421915178349" class="link-arrow" style="color:var(--fg-primary)">+421 915 178 349</a><br>
-          <a href="mailto:info@gelavit.sk" style="color:var(--brand)">info@gelavit.sk</a>
+          <a href="mailto:info@gelavit.sk" style="color:var(--acc)">info@gelavit.sk</a>
         </p>
       </div>
 
@@ -58,7 +58,7 @@
             <span>{{ pt.addr }}</span>
             {%- if pt.note %}<span>{{ pt.note }}</span>{%- endif %}
             {%- if pt.hours %}<span>{{ t.open }}: {{ pt.hours }}</span>{%- endif %}
-            {%- if pt.web %}<span><a href="{{ pt.web }}" target="_blank" rel="noopener" style="color:var(--brand)">{{ pt.web|replace('https://','')|replace('http://','') }}</a></span>{%- endif %}
+            {%- if pt.web %}<span><a href="{{ pt.web }}" target="_blank" rel="noopener" style="color:var(--acc)">{{ pt.web|replace('https://','')|replace('http://','') }}</a></span>{%- endif %}
           </li>
           {%- endfor %}
         </ul>
