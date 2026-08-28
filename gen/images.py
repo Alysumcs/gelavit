@@ -155,12 +155,33 @@ LIFESTYLE_WIDTHS = [800, 1600]
 BADGE_WIDTHS = [160, 320]
 
 
+CACHE = ROOT / "gen" / ".cache"
+
+
+def cached_cutout(f):
+    """Vyrezanie je morfologicky drahé (~15 s na obrázok), preto ho cachujeme.
+
+    Kľúčom je čas poslednej zmeny zdroja — po jeho výmene sa prepočíta samo.
+    Cache sa dá kedykoľvek zmazať: rm -rf gen/.cache
+    """
+    CACHE.mkdir(parents=True, exist_ok=True)
+    stamp = int(f.stat().st_mtime)
+    hit = CACHE / f"{f.stem}-{stamp}.png"
+    if hit.exists():
+        return Image.open(hit).convert("RGBA")
+    for old in CACHE.glob(f"{f.stem}-*.png"):
+        old.unlink()
+    im = trim(cutout(Image.open(f)))
+    im.save(hit, "PNG")
+    return im
+
+
 def products():
     """Dve sady: na krémovom pozadí (karty) a s priehľadným pozadím (scroll scéna)."""
     d = OUT / "products"
     n = 0
     for f in sorted((SRC / "products").glob("*.png")):
-        base = trim(cutout(Image.open(f)))
+        base = cached_cutout(f)
         # karta: vyrezaný produkt na krémovej ploche bunky
         save(square(base, 1000, CREAM, pad=0.06), d / f.stem, PRODUCT_WIDTHS, fmt="png")
         # priehľadná verzia pre hero scénu, showcase a detail produktu —

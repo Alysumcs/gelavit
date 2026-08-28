@@ -1057,6 +1057,28 @@ def write_seo(SITE, SITE_URL, urls):
            "</IfModule>", ""]
     (SITE / ".htaccess").write_text("\n".join(ht))
 
-    # Netlify / Vercel varianta
+    # Netlify
     (SITE / "_redirects").write_text(
         "\n".join(f"{o}  {n}  301" for o, n in old_new) + "\n")
+
+    # Vercel — _redirects ani .htaccess tam neplatia, presmerovania sa
+    # zapisujú do vercel.json v koreni nasadenia.
+    import json as _json
+    (SITE / "vercel.json").write_text(_json.dumps({
+        "cleanUrls": False,
+        "trailingSlash": False,
+        "redirects": [{"source": o.rstrip("/") or "/", "destination": n,
+                       "permanent": True} for o, n in old_new],
+        "headers": [{
+            "source": "/(.*)",
+            "headers": [
+                {"key": "X-Content-Type-Options", "value": "nosniff"},
+                {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
+                {"key": "X-Frame-Options", "value": "SAMEORIGIN"},
+            ],
+        }, {
+            "source": "/assets/(.*)",
+            "headers": [{"key": "Cache-Control",
+                         "value": "public, max-age=31536000, immutable"}],
+        }],
+    }, ensure_ascii=False, indent=2) + "\n")
