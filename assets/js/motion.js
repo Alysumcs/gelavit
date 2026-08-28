@@ -11,7 +11,8 @@
 
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var reduce = mqReduce.matches;
-  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var touch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !touch;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var raf = window.requestAnimationFrame.bind(window);
