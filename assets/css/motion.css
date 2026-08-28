@@ -390,12 +390,24 @@ html.has-inertia { scroll-behavior: auto !important; }
     50%     { transform: rotate(4deg)   translate(-28px, 26px) scale(1.12); }
   }
 
-  /* --- 14.9 Showcase: disk dýcha --- */
-  .showcase-slide.is-on .showcase-disc { animation: breathe 9s ease-in-out infinite; }
-  @keyframes breathe {
-    0%,100% { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
-    50%     { transform: translate(-50%, -50%) scale(1.09) rotate(8deg); }
+  /* --- 14.9 Organický tvar sa pomaly otáča ako na obale --- */
+  .blob-fill { animation: blob-a 26s ease-in-out infinite; }
+  .blob-line { animation: blob-b 34s ease-in-out infinite; }
+  .blob-line--2 { animation: blob-c 41s ease-in-out infinite; }
+  @keyframes blob-a {
+    0%,100% { transform: rotate(0deg)   scale(1); }
+    50%     { transform: rotate(-11deg) scale(1.05); }
   }
+  @keyframes blob-b {
+    0%,100% { transform: rotate(19deg) scale(1.02); }
+    50%     { transform: rotate(36deg) scale(.97); }
+  }
+  @keyframes blob-c {
+    0%,100% { transform: rotate(-17deg) scale(.9); }
+    50%     { transform: rotate(-38deg) scale(.95); }
+  }
+
+  /* --- 14.9 Showcase: disk dýcha --- */
 
   /* --- 14.10 Bodka v marquee --- */
   .marquee li i { animation: pop 6s ease-in-out infinite; }
@@ -406,7 +418,8 @@ html.has-inertia { scroll-behavior: auto !important; }
 @media (prefers-reduced-motion: reduce) {
   .drop--1, .drop--2, .drop--3, .hero-deco .dot, .hero-deco .bar,
   .hero-plate, .hero-seal-ring, .hero-seal, .ticker-track,
-  .chip-strip span, .marquee li i, .showcase-disc, .page-hero::after { animation: none !important; }
+  .chip-strip span, .marquee li i, .page-hero::after,
+  .blob-fill, .blob-line { animation: none !important; }
   .ticker { height: auto; }
   .ticker-track b:not(:first-child) { display: none; }
   .stat::after { transform: none; }
