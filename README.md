@@ -462,3 +462,33 @@ Vyrezávanie packshotov je morfologicky drahé (asi 15 s na obrázok), preto sa
 výsledok cachuje do `gen/.cache/` s časovou pečiatkou zdroja. Prvý beh trvá
 niekoľko minút, ďalšie asi minútu. Po výmene zdrojového packshotu sa jeho
 cache prepočíta sama; celú vieš zahodiť cez `rm -rf gen/.cache`.
+
+
+## Hierarchia nadpisov a veľkosť produktu
+
+Nadpis v hero musí byť najväčší text na stránke. Predtým ním nebol — pri
+1280 × 720 mal hero 45 px, kým nadpis sekcie 02 pod ním 75 px, čiže sekcia
+hero prerástla o dve tretiny. Príčina: `--t-4` (h2) sa škáloval len podľa
+šírky okna, kým hero bol z dôvodu zmestenia do jednej obrazovky obmedzený
+aj podľa výšky.
+
+Riešenie: **oba** sa teraz viažu na šírku aj výšku okna.
+
+```css
+--t-4: clamp(2rem, min(1.2rem + 2.9vw, 7.6vh), 4.2rem);          /* h2 sekcií */
+.hero h1 { font-size: clamp(2.75rem, min(1.6rem + 4.6vw, 11.5vh), 7.5rem); }
+```
+
+Nameraný pomer hero : sekcia po úprave:
+
+| Okno | hero h1 | sekcia h2 | pomer |
+|---|---|---|---|
+| 390 × 844 | 44 px | 32 px | 1,38× |
+| 744 × 1133 | 60 px | 41 px | 1,47× |
+| 1024 × 700 | 73 px | 49 px | 1,49× |
+| 1280 × 720 | 83 px | 55 px | 1,51× |
+| 1440 × 900 | 92 px | 61 px | 1,51× |
+| 1920 × 1080 | 114 px | 67 px | 1,70× |
+
+To isté platí pre produkt: tvar v hero má pri 1440 × 900 **540 px**,
+kým v sekcii 03 **480 px**. Hero teda vedie aj obrazom, nielen textom.
