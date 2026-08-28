@@ -433,3 +433,14 @@ html.has-inertia { scroll-behavior: auto !important; }
   .cart-btn .cart-count,
   .cart-btn .cart-count.is-pop { color: #fff; }
 }
+
+/* ==========================================================================
+   16. Hero: pätka scény (meta riadok + linka postupu) je ukotvená na spodok
+   pripnutia, takže mriežka má celú výšku pre nadpis a produkt.
+   Musí byť tu, lebo blok 4 nastavuje .js .hero-meta { position: relative }.
+   ========================================================================== */
+@media (min-width: 981px) and (hover: hover) {
+  .js .hero .hero-foot { position: absolute; left: 0; right: 0; bottom: 0; margin-top: 0; }
+  .js .hero .hero-meta { position: relative; margin-top: 0; margin-bottom: clamp(1.2rem, 2.4vh, 1.9rem); }
+  .hero-grid { align-items: center; }
+}
