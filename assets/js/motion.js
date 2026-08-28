@@ -272,8 +272,9 @@
     setActive(0);
 
     // mobil / reduced motion: klikacie prepínanie, žiadna pripnutá scéna
-    var staticMode = reduce || innerWidth < 980;
-    if (staticMode) hero.classList.add('is-static');
+    var coarse = window.matchMedia('(hover: none)').matches;
+    var staticMode = reduce || coarse || innerWidth < 980;
+    if (staticMode) { hero.classList.add('is-static'); hero.style.height = 'auto'; }
 
     dots.forEach(function (d, i) {
       d.addEventListener('click', function () {
@@ -326,7 +327,7 @@
     setActive(0, 0);
 
     // mobil / reduced motion: prepínanie klikom, bez scroll-driven scény
-    if (reduce || innerWidth < 980) {
+    if (reduce || innerWidth < 980 || window.matchMedia('(hover: none)').matches) {
       sec.classList.add('is-static');
       dots.forEach(function (d, i) {
         d.addEventListener('click', function () { setActive(i, (i + 1) / slides.length); });
@@ -367,7 +368,7 @@
     if (!track) return;
 
     function distance() { return Math.max(0, track.scrollWidth - innerWidth + 80); }
-    if (reduce || innerWidth < 900) {
+    if (reduce || innerWidth < 900 || window.matchMedia('(hover: none)').matches) {
       wrap.classList.add('is-static');
       return;
     }

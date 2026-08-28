@@ -73,7 +73,7 @@
 /* ---------- 2. Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   background: var(--bg); color: var(--ink);
   font: 400 var(--t-0)/1.55 var(--font);
@@ -201,16 +201,19 @@ strong { font-weight: 600; }
 .lang a[aria-current="true"] { color: var(--ink); }
 
 .cart-btn {
-  position: relative; display: inline-flex; align-items: center; gap: .5rem;
-  height: 40px; padding: 0 14px; border: 1px solid var(--ink); flex: none;
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 44px; padding: 0 14px; border: 1px solid var(--ink); flex: none;
   font-family: var(--mono); font-size: .6875rem; letter-spacing: .08em;
   white-space: nowrap;
   transition: background .18s, color .18s;
 }
 .cart-btn:hover { background: var(--ink); color: var(--inv); }
+.cart-ico { flex: none; }
 .cart-count { font-variant-numeric: tabular-nums; }
+.cart-count::before { content: "["; }
+.cart-count::after  { content: "]"; }
 
-.burger { display: none; width: 44px; height: 40px; border: 1px solid var(--ink); background: none; cursor: pointer; }
+.burger { display: none; width: 44px; height: 44px; border: 1px solid var(--ink); background: none; cursor: pointer; flex: none; }
 .burger span { display: block; width: 18px; height: 1px; background: var(--ink); margin: 4px auto; transition: .25s var(--ease); }
 
 .mobile-menu {
@@ -219,7 +222,7 @@ strong { font-weight: 600; }
 }
 .mobile-menu.is-open { display: flex; }
 .mm-top { display: flex; align-items: center; justify-content: space-between; padding-bottom: var(--s4); border-bottom: 1px solid var(--line); }
-.mm-top img { width: 120px; }
+.mm-top img { width: clamp(140px, 42vw, 168px); }
 .mm-close { font-size: 1.9rem; background: none; border: 0; cursor: pointer; line-height: 1; width: 44px; height: 44px; }
 .mm-links { display: flex; flex-direction: column; margin-top: var(--s5); }
 .mm-links a {
@@ -384,7 +387,8 @@ strong { font-weight: 600; }
 .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--ink); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); }
 .opt { display: flex; gap: var(--s3); align-items: flex-start; padding: 15px; border: 1px solid var(--line-mid); cursor: pointer; margin-bottom: -1px; transition: border-color .18s, background .18s; }
-.opt:has(input:checked) { border-color: var(--ink); background: var(--bg-alt); position: relative; z-index: 1; }
+.opt:has(input:checked),
+.opt.is-chosen { border-color: var(--ink); background: var(--bg-alt); position: relative; z-index: 1; }
 .opt input { margin-top: .3rem; accent-color: var(--acc); }
 .opt b { display: block; font-size: .9375rem; font-weight: 500; }
 .opt small { color: var(--mid); font-size: .8125rem; }
@@ -444,12 +448,13 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 .site-footer a:hover { color: #fff; }
 .site-footer li + li { margin-top: .5rem; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.4fr; gap: var(--gut); }
+.footer-grid > * { min-width: 0; }
 .footer-bottom {
   margin-top: var(--s8); padding-top: var(--s5); border-top: 1px solid rgba(255,255,255,.14);
   display: flex; flex-wrap: wrap; gap: var(--s4); justify-content: space-between;
   font-family: var(--mono); font-size: .6875rem; letter-spacing: .06em;
 }
-.social { display: flex; gap: 0; margin-top: var(--s5); }
+.social { display: flex; flex-wrap: wrap; gap: 0; margin-top: var(--s5); }
 .social a { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.2); display: grid; place-items: center; margin-right: -1px; }
 .social a:hover { background: var(--acc); border-color: var(--acc); color: #fff; }
 .newsletter { display: flex; margin-top: var(--s4); }
@@ -759,3 +764,139 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
   .hero-pick { min-height: 8.5rem; text-align: left; }
   .hero-stage .hero-seal { right: -6px; bottom: -6px; }
 }
+
+/* ==========================================================================
+   22. Responzivita a kompatibilita
+   Overené na 320 / 360 / 390 / 412 / 430 / 744 / 820 / 1024 / 1180 /
+   1280 / 1440 / 1920 px a na nízkych výškach okna.
+   ========================================================================== */
+
+/* --- 22.1 Bezpečné plochy (iPhone s výrezom) --- */
+.wrap, .announce { padding-inline: env(safe-area-inset-left) env(safe-area-inset-right); }
+.mobile-menu { padding-bottom: max(var(--s6), env(safe-area-inset-bottom)); }
+
+/* --- 22.2 Výška okna na mobiloch: dvh, kde ho prehliadač vie --- */
+.hero-pin, .rail-pin { min-height: 100vh; }
+.showcase-pin { height: 100vh; }
+@supports (height: 100svh) {
+  .hero-pin, .rail-pin { min-height: 100svh; }
+  .showcase-pin { height: 100svh; }
+  .rail-pin { height: 100svh; }
+}
+
+/* --- 22.3 Hlavička na mobile: väčšie logo, košík len ikona --- */
+@media (max-width: 860px) {
+  .nav { min-height: 64px; gap: var(--s4); }
+  .brand { margin-right: auto; }
+  .brand img { width: clamp(132px, 38vw, 168px); }
+
+  /* prepínač jazyka je aj v mobilnom menu — v hlavičke robí len tlačenicu */
+  .nav-actions .lang { display: none; }
+  .nav-actions { margin-left: 0; gap: 8px; }
+
+  .cart-btn { width: 44px; padding: 0; }
+  .cart-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .cart-count {
+    position: absolute; top: 2px; right: 2px; min-width: 18px; height: 18px;
+    display: grid; place-items: center; padding: 0 4px;
+    background: var(--acc); color: #fff; border-radius: 10px;
+    font-size: .625rem; line-height: 1;
+  }
+  .cart-count::before, .cart-count::after { content: none; }
+  .cart-btn:hover .cart-count { background: var(--acc); color: #fff; }
+  /* prázdny košík nepotrebuje bublinu s nulou */
+  .cart-count:not(.is-on) { display: none; }
+}
+
+/* --- 22.4 Najužšie telefóny (320–360 px) --- */
+@media (max-width: 380px) {
+  .nav { gap: 6px; }
+  .brand img { width: clamp(124px, 40vw, 140px); }
+  .announce { font-size: .5625rem; letter-spacing: .06em; padding: 8px 12px; }
+  .btn { padding-inline: 20px; }
+  .hero-meta { font-size: .6875rem; gap: var(--s2); }
+  .quote, .feature { min-width: 0; }
+}
+
+/* --- 22.5 Dotykové ciele aspoň 44 px --- */
+@media (max-width: 860px), (hover: none) {
+  .lang a { padding: 12px 14px; }
+  .mm-close { width: 48px; height: 48px; }
+  .link-arrow { padding-block: 12px; }
+  .faq summary { min-height: 48px; display: flex; align-items: center; }
+  .hero-dot { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
+  .showcase-dot { min-height: 48px; }
+  .qty button { min-width: 44px; min-height: 44px; }
+  .check input[type="checkbox"] { width: 22px; height: 22px; flex: none; }
+  .check { display: flex; align-items: flex-start; gap: .7rem; min-height: 44px; }
+
+  /* odkazy v pätičke a v zozname článkov potrebujú väčší dotykový cieľ */
+  .site-footer li a, .footer-bottom a { display: inline-block; padding-block: 11px; }
+  .site-footer li + li { margin-top: 0; }
+  .crumbs a { display: inline-block; padding-block: 8px; }
+  .pos-list a, .info-card a, .mm-contact { display: inline-block; padding-block: 10px; }
+}
+
+/* --- 22.6 iOS: polia s písmom pod 16 px spúšťajú zoom pri kliknutí --- */
+@media (max-width: 860px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+/* --- 22.7 Nízke okno: hero scéna sa musí zmestiť do jednej obrazovky --- */
+@media (min-width: 981px) and (max-height: 860px) {
+  .hero-pin { padding-block: clamp(4rem, 8vh, 4.75rem) clamp(.5rem, 1.5vh, 1rem); }
+  .hero h1 { font-size: clamp(2.2rem, 4.4vh, 3.4rem); }
+  .hero .lead { font-size: .875rem; margin-top: var(--s3); }
+  .hero-ticker { font-size: clamp(1.2rem, 3vh, 1.6rem); margin-top: var(--s3); }
+  .hero .btn-row { margin-top: var(--s4); }
+  .hero .btn { min-height: 42px; padding-block: 11px; }
+  .hero-stage { max-width: min(420px, 38vh); }
+  .hero-pick { min-height: 7rem; margin-top: var(--s3); }
+  .hero-pick .n { font-size: clamp(1.05rem, 2.4vh, 1.4rem); margin-top: var(--s2); }
+  .hero-pick .btn { margin-top: var(--s3); }
+  .hero-grid { gap: clamp(16px, 2vw, 28px); }
+}
+@media (min-width: 981px) and (max-height: 700px) {
+  .hero-stage { max-width: min(360px, 34vh); }
+  .hero-pick { min-height: 6rem; }
+  .hero-meta { display: none; }
+}
+
+/* --- 22.8 Tablety na výšku: mriežky sa nesmú lámať na útržky --- */
+@media (max-width: 1080px) and (min-width: 861px) {
+  .nav-links { gap: var(--s5); }
+  .products-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+}
+@media (max-width: 760px) {
+  .quote-grid, .products-grid { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; gap: var(--s5); }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat { padding-right: var(--s4); }
+  .seal-row, .pdp-badges { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --- 22.9 Drobnosti, ktoré pretekali --- */
+/* dotykové zariadenia dostanú hero ako bežnú sekciu, nie pripnutú scénu */
+.hero.is-static { height: auto !important; }
+.hero.is-static .hero-pin { position: static; min-height: 0; padding-block: clamp(2rem, 6vw, 3.5rem); }
+@media (hover: none) {
+  .hero { height: auto !important; }
+  .hero-pin { position: static; min-height: 0; }
+  .hero-copy, .hero-visual, .hero-meta { grid-column: 1 / 13; }
+  .hero-visual { border-left: 0; padding-left: 0; margin-top: var(--s7); }
+}
+
+.grid > *, .split > *, .footer-grid > *, .contact-grid > *, .cols-2 > *,
+.feature-grid > *, .quote-grid > *, .products-grid > * { min-width: 0; }
+.card-desc, .quote p, .feature p, .lead, .mm-contact { overflow-wrap: anywhere; }
+
+/* zaškrtávacie polia majú aj na myši spĺňať minimálny cieľ 24 px */
+.check input[type="checkbox"] { width: 20px; height: 20px; flex: none; accent-color: var(--acc); }
+/* prázdny košík: v mobilnom menu neukazuj prázdne zátvorky */
+body.cart-empty .mm-count { display: none; }
+.check { display: flex; align-items: flex-start; gap: .7rem; }
+
+.media-frame, .split-media, .pdp-stage { max-width: 100%; }
+.media-frame img, .split-media img { width: 100%; height: auto; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.faq summary, .mm-links a, .nav-links a { -webkit-tap-highlight-color: transparent; }

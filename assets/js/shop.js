@@ -65,6 +65,7 @@
   /* ---------- header count ---------- */
   function paintCount() {
     var n = Cart.count();
+    document.body.classList.toggle('cart-empty', n === 0);
     $$('.cart-count').forEach(function (el) {
       el.textContent = n;
       el.classList.toggle('is-on', n > 0);
@@ -275,6 +276,22 @@
   }
 
   /* ---------- boot ---------- */
+  /* Záložka pre prehliadače bez :has() — vybraná možnosť dostane triedu */
+  (function markChosen() {
+    var opts = $$('.opt'); if (!opts.length) return;
+    function paint() {
+      opts.forEach(function (o) {
+        var i = o.querySelector('input');
+        o.classList.toggle('is-chosen', !!(i && i.checked));
+      });
+    }
+    opts.forEach(function (o) {
+      var i = o.querySelector('input');
+      if (i) i.addEventListener('change', paint);
+    });
+    paint();
+  })();
+
   document.addEventListener('cart:change', function () { renderCart(); paintTotals(); });
   paintCount();
   initChrome();
