@@ -44,35 +44,68 @@ def trim(im, bg_tol=14):
 
 
 
-def flatten_bg(im, to, bright=224, neutral=16, feather=1.0):
-    """Zjednotí ateliérové pozadie packshotu na jednu presnú farbu.
+def _disk(r):
+    y, x = np.ogrid[-r:r + 1, -r:r + 1]
+    return (x * x + y * y) <= r * r
 
-    Packshoty prišli z rôznych fotení — niektoré majú čisto biele pozadie,
-    iné jemný sivý prechod. V scénach sa produkt prekrýva režimom `multiply`,
-    ktorý zahodí len ČISTO bielu; sivý podklad by ostal ako viditeľný obdĺžnik.
-    Preto pozadie normalizujeme.
 
-    Berieme len svetlé a nefarebné pixely spojené s okrajom obrázka — čo
-    prípadne „presiakne" do bielej plochy etikety, nevadí: tá sa v scéne
-    zafarbí rovnakým jemným tónom ako podklad.
+def cutout(im, bright=224, neutral=16, sever=14, speck=0.002, feather=0.8):
+    """Vyreže produkt z ateliérového pozadia a dá mu skutočnú alfu.
+
+    Packshoty prišli z rôznych fotení a majú svetlé jednofarebné pozadie.
+    Samotný prah nestačí — biele plochy na obale (etiketa fľaše, predná stena
+    krabičky) sú rovnako svetlé ako pozadie a na niektorých miestach doň
+    priamo prechádzajú bez viditeľnej hrany. Postup je preto trojkrokový:
+
+    1. maska svetlých nefarebných pixelov spojených s okrajom obrázka,
+       pričom pred hľadaním sa maska zerodujte a späť dilatuje — to prereže
+       úzke krčky, ktorými pozadie „presakuje" do bielej etikety,
+    2. z objektu sa odstránia drobné škvrny,
+    3. každý riadok sa vyplní medzi krajnými bodmi objektu. Všetky obaly sú
+       vodorovne súvislé (nemajú dieru ani ucho), takže tým sa spoľahlivo
+       doplní aj biela plocha, ktorá s pozadím splýva.
+
+    Obrázky, ktoré priehľadnosť už majú, sa nechávajú tak.
     """
+    im = to_rgba(im)
+    if im.getchannel("A").getextrema()[0] < 250:
+        return im
+
     rgb = np.asarray(im.convert("RGB"), dtype=np.int16)
     lo, hi = rgb.min(axis=2), rgb.max(axis=2)
     light = (lo >= bright) & ((hi - lo) <= neutral)
 
-    seed = np.zeros_like(light)
-    seed[0, :] = light[0, :]; seed[-1, :] = light[-1, :]
-    seed[:, 0] = light[:, 0]; seed[:, -1] = light[:, -1]
-    if not seed.any():
+    k = _disk(sever)
+    core = ndimage.binary_erosion(light, structure=k, border_value=1)
+    lab, n = ndimage.label(core)
+    if not n:
         return im
-    bg = ndimage.binary_propagation(seed, mask=light)
+    edge = set(lab[0, :]) | set(lab[-1, :]) | set(lab[:, 0]) | set(lab[:, -1])
+    edge.discard(0)
+    core = np.isin(lab, list(edge))
+    obj = ~(ndimage.binary_dilation(core, structure=k) & light)
 
-    m = Image.fromarray(np.where(bg, 255, 0).astype(np.uint8), "L")
+    lab, n = ndimage.label(obj)
+    if n:
+        sizes = ndimage.sum(obj, lab, range(1, n + 1))
+        obj = np.isin(lab, [i + 1 for i, sz in enumerate(sizes) if sz >= obj.size * speck])
+    if not obj.any():
+        return im
+
+    h, w = obj.shape
+    idx = np.arange(w)
+    has = obj.any(axis=1)
+    first = np.argmax(obj, axis=1)
+    last = w - 1 - np.argmax(obj[:, ::-1], axis=1)
+    span = (idx[None, :] >= first[:, None]) & (idx[None, :] <= last[:, None]) & has[:, None]
+    span = ndimage.binary_fill_holes(span)
+
+    m = Image.fromarray(np.where(span, 255, 0).astype(np.uint8), "L")
     if feather:
         m = m.filter(ImageFilter.GaussianBlur(feather))
-    flat = Image.new("RGB", im.size, to)
-    out = Image.composite(flat, im.convert("RGB"), m)
-    return out.convert("RGBA")
+    out = im.copy()
+    out.putalpha(m)
+    return out
 
 
 def square(im, size, bg, pad=0.075):
@@ -127,16 +160,12 @@ def products():
     d = OUT / "products"
     n = 0
     for f in sorted((SRC / "products").glob("*.png")):
-        base = trim(Image.open(f))
-        # karta: pozadie packshotu zladíme s krémovou plochou bunky
-        card = flatten_bg(base, CREAM)
-        save(square(card, 1000, CREAM, pad=0.06), d / f.stem, PRODUCT_WIDTHS, fmt="png")
-        # priehľadná verzia pre hero scénu a showcase.
-        # Packshoty sú na bielom ateliérovom pozadí; automatické vyrezanie
-        # skla fľaše a hrdla vrecka nedávalo čistý výsledok, preto ich
-        # nevyrezávame a v scénach ich staviame na bielu plochu — farbu nesie
-        # prstenec okolo produktu, nie plný disk pod ním.
-        t = flatten_bg(base, WHITE)
+        base = trim(cutout(Image.open(f)))
+        # karta: vyrezaný produkt na krémovej ploche bunky
+        save(square(base, 1000, CREAM, pad=0.06), d / f.stem, PRODUCT_WIDTHS, fmt="png")
+        # priehľadná verzia pre hero scénu, showcase a detail produktu —
+        # produkt má skutočnú alfu, takže farebný tvar je naozaj ZA ním
+        t = base
         w = max(t.size)
         canvas = Image.new("RGBA", (w, w), (0, 0, 0, 0))
         canvas.alpha_composite(t, ((w - t.size[0]) // 2, (w - t.size[1]) // 2))
