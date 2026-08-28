@@ -97,14 +97,18 @@
       </div>
     </div>
 
-    <div class="hero-meta reveal rule-draw" style="--i:4">
-      <span><b>97 %</b> {{ t.stats[0].l }}</span>
-      <span><b>5 g</b> {{ t.stats[2].l }}</span>
-      <span><b>2015</b> {{ t.stats[3].l }}</span>
-      <span class="scroll-cue">{{ t.scroll }}<i></i></span>
-    </div>
+  </div>
 
-    <div class="hero-progress" aria-hidden="true"><i></i></div>
+    <div class="hero-foot">
+      <div class="wrap">
+        <div class="hero-meta reveal rule-draw" style="--i:4">
+          <span><b>97 %</b> {{ t.stats[0].l }}</span>
+          <span><b>5 g</b> {{ t.stats[2].l }}</span>
+          <span><b>2015</b> {{ t.stats[3].l }}</span>
+          <span class="scroll-cue">{{ t.scroll }}<i></i></span>
+        </div>
+      </div>
+      <div class="hero-progress" aria-hidden="true"><i></i></div>
     </div>
   </div>
 </section>
@@ -128,7 +132,7 @@
       <p class="section-index reveal" style="--c:var(--c2)">02 / {{ t.problem_eyebrow }}</p>
       <h2 style="margin-top:var(--s5)" data-split>{{ t.problem_h2|safe }}</h2>
     </div>
-    <div class="col-7" style="grid-column:6/13">
+    <div class="col-main">
       <p class="lead reveal">{{ t.problem_lead }}</p>
       <div class="feature-grid" style="margin-top:var(--s7)">
         {%- for f in t.problems %}
@@ -197,7 +201,7 @@
       <p class="section-index reveal" style="--c:var(--c2)">07 / {{ t.how_eyebrow }}</p>
       <h2 style="margin-top:var(--s5)" data-split>{{ t.how_h2|safe }}</h2>
     </div>
-    <div style="grid-column:6/13">
+    <div class="col-main">
       <div class="feature-grid">
         {%- for s in t.how_steps %}
         <div class="feature reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">
@@ -244,7 +248,7 @@
       <p class="section-index reveal" style="--c:var(--c4)">09 / FAQ</p>
       <h2 style="margin-top:var(--s5)" data-split>{{ t.faq_h2 }}</h2>
     </div>
-    <div style="grid-column:6/13">
+    <div class="col-main">
       <div class="faq">
         {%- for f in t.faq %}
         <details{% if loop.first %} open{% endif %}>
@@ -263,7 +267,7 @@
       <p class="section-index" style="--c:var(--c5);color:#A9B8CB">10 / {{ t.nav_products }}</p>
       <h2 style="color:#fff;margin-top:var(--s5)" data-split>{{ t.cta_h2|safe }}</h2>
     </div>
-    <div style="grid-column:9/13">
+    <div class="col-aside">
       <p style="color:#A9B8CB">{{ t.cta_p }}</p>
       <div class="btn-row" style="margin-top:var(--s5)">
         <a class="btn btn--primary" href="{{ u.products }}">{{ t.hero_cta }}</a>
