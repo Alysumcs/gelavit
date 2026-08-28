@@ -630,7 +630,7 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 /* --- 20.8 PDP: farba produktu --- */
 .pdp-stage { position: relative; aspect-ratio: 1; display: grid; place-items: center; padding: var(--s5); overflow: hidden; }
 .pdp-stage picture { position: relative; z-index: 1; width: 76%; }
-.pdp-stage img { width: 100%; mix-blend-mode: multiply; }
+.pdp-stage img { width: 100%; }
 .pdp-blob { width: 93%; aspect-ratio: 1; z-index: 0; }
 .pdp-cat { color: var(--hue, var(--acc)); }
 .pdp-cat::before {
@@ -686,10 +686,8 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 .hero-blob { width: 97%; aspect-ratio: 1; }
 .showcase-blob { width: min(52vh, 430px); aspect-ratio: 1; z-index: 0; }
 
-/* Packshoty sú na bielom podklade. Násobiace prelínanie bielu zahodí,
-   takže produkt sedí na farebnom tvare aj bez vyrezávania — funguje
-   aj na skle fľaše a na mäkkých hranách. */
-.hero-slide img, .showcase-slide img { mix-blend-mode: multiply; }
+/* Packshoty majú skutočnú alfu (viď cutout() v gen/images.py),
+   takže farebný tvar je naozaj za produktom, nie cez neho. */
 
 .hero-slides { position: relative; width: 68%; aspect-ratio: 1; display: grid; }
 .hero-slide {
