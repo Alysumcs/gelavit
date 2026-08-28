@@ -8,11 +8,17 @@
 
 <section class="section section--tight" style="--hue:{{ p.hue }};--hue-t:{{ p.hue_t }}">
   <div class="wrap pdp">
-    <div class="pdp-media reveal-img"><span class="pdp-tint" aria-hidden="true"></span>
-      {% with pic_stem = 'assets/img/products/' + p.img, pic_w = [400, 800], pic_fmt = 'png',
-              pic_alt = p.name, pic_sizes = '(max-width: 980px) 92vw, 540px', pic_eager = true %}
-      {% include "_pic.html" %}
-      {% endwith %}
+    <div class="pdp-media reveal-img">
+      <div class="pdp-stage">
+        <svg class="blob pdp-blob" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+          <path class="blob-fill" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+          <path class="blob-line" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+        </svg>
+        {% with pic_stem = 'assets/img/products/' + p.img + '-tr', pic_w = [500, 1000], pic_fmt = 'png',
+                pic_alt = p.name, pic_sizes = '(max-width: 980px) 92vw, 540px', pic_eager = true %}
+        {% include "_pic.html" %}
+        {% endwith %}
+      </div>
       <div class="pdp-badges">
         <img src="{{ base }}assets/img/badge/97-{{ lang }}-320.png" alt="" width="80" height="80" loading="lazy">
         <img src="{{ base }}assets/img/badge/hydro-5000-320.png" alt="" width="80" height="80" loading="lazy">

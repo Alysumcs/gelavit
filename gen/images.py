@@ -7,6 +7,8 @@ Zdroj:  gen/src-images/
 Výstup: site/assets/img/
 """
 import pathlib, re
+import numpy as np
+from scipy import ndimage
 from PIL import Image, ImageChops, ImageFilter
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -39,6 +41,38 @@ def trim(im, bg_tol=14):
         box = diff.point(lambda v: 255 if v > bg_tol else 0).getbbox()
     return im.crop(box) if box else im
 
+
+
+
+def flatten_bg(im, to, bright=224, neutral=16, feather=1.0):
+    """Zjednotí ateliérové pozadie packshotu na jednu presnú farbu.
+
+    Packshoty prišli z rôznych fotení — niektoré majú čisto biele pozadie,
+    iné jemný sivý prechod. V scénach sa produkt prekrýva režimom `multiply`,
+    ktorý zahodí len ČISTO bielu; sivý podklad by ostal ako viditeľný obdĺžnik.
+    Preto pozadie normalizujeme.
+
+    Berieme len svetlé a nefarebné pixely spojené s okrajom obrázka — čo
+    prípadne „presiakne" do bielej plochy etikety, nevadí: tá sa v scéne
+    zafarbí rovnakým jemným tónom ako podklad.
+    """
+    rgb = np.asarray(im.convert("RGB"), dtype=np.int16)
+    lo, hi = rgb.min(axis=2), rgb.max(axis=2)
+    light = (lo >= bright) & ((hi - lo) <= neutral)
+
+    seed = np.zeros_like(light)
+    seed[0, :] = light[0, :]; seed[-1, :] = light[-1, :]
+    seed[:, 0] = light[:, 0]; seed[:, -1] = light[:, -1]
+    if not seed.any():
+        return im
+    bg = ndimage.binary_propagation(seed, mask=light)
+
+    m = Image.fromarray(np.where(bg, 255, 0).astype(np.uint8), "L")
+    if feather:
+        m = m.filter(ImageFilter.GaussianBlur(feather))
+    flat = Image.new("RGB", im.size, to)
+    out = Image.composite(flat, im.convert("RGB"), m)
+    return out.convert("RGBA")
 
 
 def square(im, size, bg, pad=0.075):
@@ -94,14 +128,15 @@ def products():
     n = 0
     for f in sorted((SRC / "products").glob("*.png")):
         base = trim(Image.open(f))
-        # Swiss Grid: ploché, bez tieňa, orezané do bunky mriežky
-        save(square(base, 1000, CREAM, pad=0.06), d / f.stem, PRODUCT_WIDTHS, fmt="png")
+        # karta: pozadie packshotu zladíme s krémovou plochou bunky
+        card = flatten_bg(base, CREAM)
+        save(square(card, 1000, CREAM, pad=0.06), d / f.stem, PRODUCT_WIDTHS, fmt="png")
         # priehľadná verzia pre hero scénu a showcase.
         # Packshoty sú na bielom ateliérovom pozadí; automatické vyrezanie
         # skla fľaše a hrdla vrecka nedávalo čistý výsledok, preto ich
         # nevyrezávame a v scénach ich staviame na bielu plochu — farbu nesie
         # prstenec okolo produktu, nie plný disk pod ním.
-        t = to_rgba(base)
+        t = flatten_bg(base, WHITE)
         w = max(t.size)
         canvas = Image.new("RGBA", (w, w), (0, 0, 0, 0))
         canvas.alpha_composite(t, ((w - t.size[0]) // 2, (w - t.size[1]) // 2))

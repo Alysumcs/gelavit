@@ -41,9 +41,10 @@
 
     <div class="hero-visual reveal" style="--i:2">
       <div class="hero-stage" data-carousel data-n="{{ hero_items|length }}" style="--n:{{ hero_items|length }}">
-        <span class="hero-disc" aria-hidden="true"></span>
-        <svg class="hero-ring" viewBox="0 0 300 300" aria-hidden="true">
-          <circle cx="150" cy="150" r="132" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 7"/>
+        <svg class="blob hero-blob" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+          <path class="blob-fill" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+          <path class="blob-line" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+          <path class="blob-line blob-line--2" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
         </svg>
 
         <div class="hero-slides">

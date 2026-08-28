@@ -20,7 +20,10 @@
       <div class="showcase-stage">
         {%- for p in showcase %}
         <div class="showcase-slide{% if loop.first %} is-on{% endif %}" style="--hue:{{ p.hue }}">
-          <span class="showcase-disc" aria-hidden="true"></span>
+          <svg class="blob showcase-blob" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+            <path class="blob-fill" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+            <path class="blob-line" d="M104 20 C176 0 258 30 282 98 C303 158 272 202 228 230 C192 253 200 288 152 294 C94 301 20 258 12 188 C4 122 42 38 104 20Z"/>
+          </svg>
           <img src="{{ base }}assets/img/products/{{ p.img }}-tr-500.png"
                srcset="{{ base }}assets/img/products/{{ p.img }}-tr-500.png 500w, {{ base }}assets/img/products/{{ p.img }}-tr-1000.png 1000w"
                sizes="(max-width: 980px) 70vw, 400px"
