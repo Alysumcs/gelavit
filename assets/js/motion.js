@@ -25,7 +25,13 @@
   var Scroll = {
     y: window.scrollY, target: window.scrollY, active: false,
     listeners: [],
-    on: function (fn) { this.listeners.push(fn); }
+    on: function (fn) { this.listeners.push(fn); },
+    to: function (top) {
+      var max = document.documentElement.scrollHeight - innerHeight;
+      top = clamp(top, 0, max);
+      if (this.active) { this.target = top; }
+      else { window.scrollTo({ top: top, behavior: 'smooth' }); }
+    }
   };
 
   function inertiaScroll() {
@@ -230,13 +236,69 @@
      6. Scroll-driven hero
      ======================================================================= */
   function heroScene() {
-    var hero = $('.hero'); if (!hero || reduce) return;
-    var vis = $('.hero-visual', hero), copy = $('.hero-copy', hero), cue = $('.scroll-cue', hero);
+    var hero = $('.hero'); if (!hero) return;
+    var slides = $$('.hero-slide', hero);
+    var dots   = $$('.hero-dot', hero);
+    var picks  = $$('.hero-pick-item', hero);
+    var fill   = $('.hero-progress i', hero);
+    var cue    = $('.scroll-cue', hero);
+    var stage  = $('.hero-stage', hero);
+    var ring   = $('.hero-ring', hero);
+    if (!slides.length) return;
+
+    var cur = -1;
+
+    function setActive(idx) {
+      if (idx === cur) return;
+      cur = idx;
+      slides.forEach(function (s, i) {
+        var on = i === idx;
+        s.classList.toggle('is-on', on);
+        s.setAttribute('aria-hidden', on ? 'false' : 'true');
+        s.setAttribute('tabindex', on ? '0' : '-1');
+      });
+      picks.forEach(function (s, i) {
+        var on = i === idx;
+        s.classList.toggle('is-on', on);
+        var a = s.querySelector('a'); if (a) a.setAttribute('tabindex', on ? '0' : '-1');
+      });
+      dots.forEach(function (d, i) {
+        d.classList.toggle('is-on', i === idx);
+        d.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      });
+      if (stage) stage.style.setProperty('--stage-hue', slides[idx].dataset.hue || '#F04E4A');
+      if (hero) hero.style.setProperty('--stage-hue', slides[idx].dataset.hue || '#F04E4A');
+    }
+    setActive(0);
+
+    // mobil / reduced motion: klikacie prepínanie, žiadna pripnutá scéna
+    var staticMode = reduce || innerWidth < 980;
+    if (staticMode) hero.classList.add('is-static');
+
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () {
+        if (staticMode) { setActive(i); return; }
+        // pri scroll-driven scéne skoč na správnu výšku
+        var total = hero.offsetHeight - innerHeight;
+        var top = hero.offsetTop + total * ((i + 0.5) / slides.length);
+        if (window.GelavitScroll && window.GelavitScroll.to) window.GelavitScroll.to(top);
+        else window.scrollTo({ top: top, behavior: 'smooth' });
+      });
+    });
+
+    if (staticMode) return;
+
     Scroll.on(function (y) {
-      var p = clamp(y / (innerHeight * 0.9), 0, 1);
-      if (vis) vis.style.transform = 'translate3d(0,' + (y * -0.09) + 'px,0)';
-      if (copy) copy.style.transform = 'translate3d(0,' + (y * 0.05) + 'px,0)';
-      if (cue) cue.style.opacity = 1 - clamp(y / 240, 0, 1);
+      var total = hero.offsetHeight - innerHeight;
+      if (total <= 0) return;
+      var p = clamp(y / total, 0, 1);
+      var idx = clamp(Math.floor(p * slides.length * 0.999), 0, slides.length - 1);
+      setActive(idx);
+      if (fill) fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      if (ring) ring.style.transform = 'rotate(' + (p * 150).toFixed(2) + 'deg)';
+      if (cue) cue.style.opacity = 1 - clamp(p * 3.4, 0, 1);
+      var inner = (p * slides.length) % 1;
+      slides[idx].style.setProperty('--drift', (inner - 0.5).toFixed(3));
     });
   }
 

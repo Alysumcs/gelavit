@@ -202,8 +202,9 @@ strong { font-weight: 600; }
 
 .cart-btn {
   position: relative; display: inline-flex; align-items: center; gap: .5rem;
-  height: 40px; padding: 0 14px; border: 1px solid var(--ink);
+  height: 40px; padding: 0 14px; border: 1px solid var(--ink); flex: none;
   font-family: var(--mono); font-size: .6875rem; letter-spacing: .08em;
+  white-space: nowrap;
   transition: background .18s, color .18s;
 }
 .cart-btn:hover { background: var(--ink); color: var(--inv); }
@@ -231,16 +232,23 @@ strong { font-weight: 600; }
 .mm-contact { font-family: var(--mono); font-size: .75rem; color: var(--mid); letter-spacing: .04em; }
 
 /* ---------- 7. Hero ---------- */
-.hero { border-bottom: 1px solid var(--line); padding-block: clamp(2.5rem, 6vw, 6rem) 0; }
-.hero-grid { align-items: start; }
-.hero-copy { grid-column: 1 / 8; }
-.hero h1 { margin-top: var(--s5); }
-.hero .lead { margin-top: var(--s6); }
-.hero .btn-row { margin-top: var(--s6); }
-.hero-visual { grid-column: 8 / 13; border-left: 1px solid var(--line); padding-left: var(--gut); position: relative; }
+/* scéna: sekcia je vysoká, vnútro sa prilepí a produkty sa menia rolovaním */
+.hero { border-bottom: 1px solid var(--line); height: calc(100vh + (var(--n, 4) - 1) * 24vh); }
+.hero-pin {
+  position: sticky; top: 0; min-height: 100vh; overflow: hidden;
+  display: grid; align-content: center;
+  padding-block: clamp(4.5rem, 7.5vh, 5.75rem) clamp(1rem, 2vh, 1.75rem);
+}
+.hero-grid { align-items: center; }
+.hero-copy { grid-column: 1 / 7; }
+.hero h1 { margin-top: var(--s4); font-size: clamp(2.4rem, 1.1rem + 4.1vw, 5rem); max-width: 13ch; }
+.hero .lead { margin-top: var(--s4); font-size: var(--t-0); max-width: 42ch; }
+.hero .btn-row { margin-top: var(--s5); }
+.hero-ticker { margin-top: var(--s4); font-size: var(--t-2); }
+.hero-visual { grid-column: 7 / 13; border-left: 1px solid var(--line); padding-left: var(--gut); position: relative; }
 .hero-visual img { width: 100%; }
 .hero-meta {
-  grid-column: 1 / 8; margin-top: var(--s7);
+  grid-column: 1 / 13; margin-top: var(--s7);
   border-top: 1px solid var(--line-ink); padding-top: var(--s3);
   display: flex; justify-content: space-between; gap: var(--s4); flex-wrap: wrap;
   font-family: var(--mono); font-size: var(--t--1); letter-spacing: .08em;
@@ -505,7 +513,7 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
    ========================================================================== */
 
 /* --- 20.1 Hero: grafická vrstva --- */
-.hero { position: relative; overflow: hidden; }
+.hero { position: relative; }
 .hero-grid { position: relative; z-index: 1; }
 .hero-deco { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .hero-deco > * { position: absolute; display: block; }
@@ -535,11 +543,6 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 .ticker-track b { display: block; height: var(--th); line-height: var(--th); font-weight: 600; color: var(--ct, var(--acc)); }
 
 /* --- 20.3 Hero: pečať 97 % --- */
-.hero-plate {
-  position: absolute; z-index: 0; left: 0; top: 18px;
-  width: 100%; height: 100%; background: var(--c1); opacity: .2;
-}
-.hero-visual .reveal-img { position: relative; z-index: 1; }
 .hero-seal {
   position: absolute; z-index: 3; right: -22px; bottom: -22px;
   width: 118px; height: 118px; border-radius: 50%;
@@ -622,8 +625,7 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
   .drop--3 { top: -50px; left: 52%; }
   .hero-deco .bar { display: none; }
   .dot--3 { display: none; }
-  .hero-plate { display: none; }
-}
+  }
 
 /* --- 20.8 PDP: farba produktu --- */
 .pdp-media { position: relative; }
@@ -642,7 +644,7 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 .showcase-disc {
   position: absolute; left: 50%; top: 50%; z-index: 0;
   width: min(46vh, 380px); aspect-ratio: 1; border-radius: 50%;
-  background: var(--hue, var(--acc)); opacity: .2;
+  border: 11px solid var(--hue, var(--acc));
   transform: translate(-50%, -50%);
 }
 .showcase-slide img { position: relative; z-index: 1; }
@@ -665,3 +667,90 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
   background: var(--c4); opacity: .14; transform: rotate(-30deg); pointer-events: none;
 }
 .page-hero > * { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   21. Hero: kruhová produktová scéna riadená rolovaním
+   ========================================================================== */
+.hero-stage {
+  position: relative; width: 100%; max-width: min(420px, 46vh); margin-inline: auto;
+  aspect-ratio: 1; display: grid; place-items: center;
+  container-type: inline-size;
+}
+.hero-disc {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 82%; aspect-ratio: 1; border-radius: 50%;
+  border: 13px solid var(--stage-hue, var(--c1));
+  transition: border-color .6s var(--ease);
+}
+.hero-ring { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--line-mid); }
+
+.hero-slides { position: relative; width: 68%; aspect-ratio: 1; display: grid; }
+.hero-slide {
+  grid-area: 1 / 1; display: grid; place-items: center;
+  opacity: 0; transform: translateY(24px) scale(.94);
+  transition: opacity .45s var(--ease), transform .7s var(--ease);
+  pointer-events: none;
+}
+.hero-slide.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.hero-slide img { width: 100%; height: auto; }
+
+/* bodky rozmiestnené po kruhu */
+.hero-orbit { position: absolute; inset: 0; --orbit-r: 188px; }
+@supports (width: 1cqi) { .hero-orbit { --orbit-r: 46cqi; } }
+.hero-dot {
+  position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; padding: 0;
+  background: none; border: 0; cursor: pointer; display: grid; place-items: center;
+  transform:
+    rotate(calc(var(--a) * (360deg / var(--n))))
+    translateY(calc(var(--orbit-r) * -1))
+    rotate(calc(var(--a) * (-360deg / var(--n))));
+  margin: -15px 0 0 -15px;
+}
+.hero-dot i {
+  display: block; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--line-mid);
+  transition: transform .35s var(--ease), background .3s, border-color .3s;
+}
+.hero-dot:hover i { border-color: var(--hue); }
+.hero-dot.is-on i { background: var(--hue); border-color: var(--hue); transform: scale(1.7); }
+
+/* pečať sadne do pravého dolného rohu scény */
+.hero-stage .hero-seal { right: 0; bottom: 4%; }
+
+/* popis aktívneho produktu pod scénou */
+.hero-pick { position: relative; margin-top: var(--s4); display: grid; min-height: 8.75rem; }
+.hero-pick-item {
+  grid-area: 1 / 1; opacity: 0; transform: translateY(14px);
+  transition: opacity .4s ease, transform .6s var(--ease); pointer-events: none;
+}
+.hero-pick-item.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.hero-pick .pct {
+  font-family: var(--mono); font-size: var(--t--1); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--hue-t); display: block;
+}
+.hero-pick .pct::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--hue); margin-right: .55em; vertical-align: .04em;
+}
+.hero-pick .n {
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem); font-weight: 600;
+  letter-spacing: -.04em; line-height: 1.05; margin-top: var(--s3); max-width: 16ch;
+}
+.hero-pick .btn { margin-top: var(--s4); }
+
+/* postup scény ako vlasová linka pod hero-meta */
+.hero-progress { grid-column: 1 / 13; position: relative; height: 2px; background: var(--line); margin-top: var(--s3); }
+.hero-progress i {
+  position: absolute; inset: 0; display: block; background: var(--stage-hue, var(--acc));
+  transform: scaleX(0); transform-origin: 0 50%; transition: background .6s var(--ease);
+}
+
+@media (max-width: 980px) {
+  .hero { height: auto !important; }
+  .hero-pin { position: static; min-height: 0; padding-block: clamp(2rem, 6vw, 3rem); }
+  .hero-copy, .hero-visual, .hero-meta { grid-column: 1 / 13; }
+  .hero-visual { border-left: 0; padding-left: 0; margin-top: var(--s7); }
+  .hero-stage { max-width: 340px; }
+  .hero-pick { min-height: 8.5rem; text-align: left; }
+  .hero-stage .hero-seal { right: -6px; bottom: -6px; }
+}
