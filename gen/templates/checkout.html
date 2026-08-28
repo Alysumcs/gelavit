@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.cart }}">{{ t.nav_cart }}</a> / {{ t.checkout_h1 }}</p>
+    <h1 style="font-size:var(--t-3)">{{ t.checkout_h1 }}</h1>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap cols-2">
+    <form id="order-form" method="POST" action="{{ order_action }}">
+      <input type="hidden" name="_subject" value="{{ t.order_subject }}">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="{{ site_url }}{{ alternates[lang] | replace(u.home, u.thanks) }}">
+      <input type="hidden" id="f-order" name="objednavka">
+      <input type="hidden" id="f-subtotal" name="medzisucet">
+      <input type="hidden" id="f-shipping" name="doprava">
+      <input type="hidden" id="f-payment" name="platba">
+      <input type="hidden" id="f-total" name="spolu">
+
+      <fieldset>
+        <legend>{{ t.co_contact }}</legend>
+        <div class="field-row">
+          <div class="field"><label for="name">{{ t.f_name }}</label><input id="name" name="meno" required autocomplete="name"></div>
+          <div class="field"><label for="phone">{{ t.f_phone }}</label><input id="phone" name="telefon" type="tel" required autocomplete="tel"></div>
+        </div>
+        <div class="field"><label for="email">{{ t.f_email }}</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{ t.co_address }}</legend>
+        <div class="field"><label for="street">{{ t.f_street }}</label><input id="street" name="ulica" required autocomplete="street-address"></div>
+        <div class="field-row">
+          <div class="field"><label for="zip">{{ t.f_zip }}</label><input id="zip" name="psc" required autocomplete="postal-code"></div>
+          <div class="field"><label for="city">{{ t.f_city }}</label><input id="city" name="mesto" required autocomplete="address-level2"></div>
+        </div>
+        <div class="field"><label for="country">{{ t.f_country }}</label>
+          <select id="country" name="krajina">
+            <option>Slovensko</option><option>Česko</option><option>Rakúsko</option><option>Nemecko</option><option>{{ t.f_other }}</option>
+          </select>
+        </div>
+        <div class="field"><label for="company">{{ t.f_company }}</label><input id="company" name="firma" autocomplete="organization"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{ t.co_shipping }}</legend>
+        {%- for s in shipping.methods %}
+        <label class="opt">
+          <input type="radio" name="shipping" value="{{ s.id }}" data-price="{{ s.price }}" data-label="{{ s.label }}"{% if loop.first %} checked{% endif %}>
+          <span><b>{{ s.label }}</b><small>{{ s.note }}</small></span>
+          <span class="opt-price">{{ s.price_fmt }}</span>
+        </label>
+        {%- endfor %}
+        <p class="muted" style="font-size:.8125rem;margin-top:.5rem">{{ t.free_from_note }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{ t.co_payment }}</legend>
+        {%- for m in payment %}
+        <label class="opt">
+          <input type="radio" name="payment" value="{{ m.id }}" data-price="{{ m.fee }}" data-label="{{ m.label }}"{% if loop.first %} checked{% endif %}>
+          <span><b>{{ m.label }}</b><small>{{ m.note }}</small></span>
+          <span class="opt-price">{{ m.fee_fmt }}</span>
+        </label>
+        {%- endfor %}
+      </fieldset>
+
+      <fieldset>
+        <legend>{{ t.co_note }}</legend>
+        <div class="field"><label for="note">{{ t.f_note }}</label><textarea id="note" name="poznamka" rows="3"></textarea></div>
+        <label class="check"><input type="checkbox" required name="suhlas_op"><span>{{ t.consent_terms|safe }}</span></label>
+        <label class="check" style="margin-top:.75rem"><input type="checkbox" name="newsletter" value="ano"><span>{{ t.consent_news }}</span></label>
+      </fieldset>
+
+      <button class="btn btn--primary btn--wide" type="submit">{{ t.place_order }}</button>
+      <p class="muted" style="font-size:.75rem;margin-top:1rem">{{ t.checkout_note }}</p>
+    </form>
+
+    <aside class="summary">
+      <h3 style="font-size:1.3rem;margin-bottom:1rem">{{ t.summary }}</h3>
+      <div id="sum-items"></div>
+      <div class="summary-row" style="border-top:1px solid var(--border-subtle);margin-top:.5rem;padding-top:.75rem"><span>{{ t.subtotal }}</span><span id="sum-sub">—</span></div>
+      <div class="summary-row"><span>{{ t.shipping }}</span><span id="sum-ship">—</span></div>
+      <div class="summary-row" id="sum-fee-row" hidden><span>{{ t.payment_fee }}</span><span id="sum-fee">—</span></div>
+      <div class="summary-row summary-row--total"><span>{{ t.total }}</span><span id="sum-total">—</span></div>
+      <p id="free-ship" class="muted" style="font-size:.8125rem;margin-top:.75rem" hidden></p>
+      <a class="link-arrow" href="{{ u.cart }}" style="margin-top:1.25rem;font-size:.875rem">{{ t.edit_cart }}</a>
+    </aside>
+  </div>
+</section>
+{% endblock %}

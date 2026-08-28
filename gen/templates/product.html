@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / <a href="{{ u.products }}">{{ t.nav_products }}</a> / {{ p.name }}</p>
+  </div>
+</section>
+
+<section class="section section--tight" style="--hue:{{ p.hue }};--hue-t:{{ p.hue_t }}">
+  <div class="wrap pdp">
+    <div class="pdp-media reveal-img"><span class="pdp-tint" aria-hidden="true"></span>
+      {% with pic_stem = 'assets/img/products/' + p.img, pic_w = [400, 800], pic_fmt = 'png',
+              pic_alt = p.name, pic_sizes = '(max-width: 980px) 92vw, 540px', pic_eager = true %}
+      {% include "_pic.html" %}
+      {% endwith %}
+      <div class="pdp-badges">
+        <img src="{{ base }}assets/img/badge/97-{{ lang }}-320.png" alt="" width="80" height="80" loading="lazy">
+        <img src="{{ base }}assets/img/badge/hydro-5000-320.png" alt="" width="80" height="80" loading="lazy">
+        <img src="{{ base }}assets/img/badge/{{ 'vyrobene-sk' if lang == 'sk' else 'made-in-sk' }}-320.png" alt="" width="80" height="80" loading="lazy">
+      </div>
+    </div>
+
+    <div class="pdp-info stack">
+      <span class="eyebrow eyebrow--brand pdp-cat">{{ p.cat }}</span>
+      <h1>{{ p.name }}</h1>
+      <p class="lead">{{ p.lead }}</p>
+
+      <div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
+        <span class="pdp-price">{{ p.price_fmt }}</span>
+        <span class="muted" style="font-size:.875rem">{{ p.pack }} · {{ t.vat_incl }}</span>
+      </div>
+
+      <p style="font-size:.875rem;display:flex;align-items:center;gap:.5rem;color:{{ 'var(--green)' if p.stock else 'var(--faint)' }}">
+        <span style="width:8px;height:8px;border-radius:50%;background:{{ 'var(--green)' if p.stock else 'var(--faint)' }};display:inline-block"></span>
+        {{ t.in_stock if p.stock else t.out_of_stock_long }}
+      </p>
+
+      {%- if p.stock %}
+      <div class="btn-row" style="align-items:center;margin-top:.5rem">
+        <div class="qty">
+          <button type="button" data-qty="-1" aria-label="−">−</button>
+          <input id="qty" type="number" value="1" min="1" max="99" aria-label="{{ t.qty }}">
+          <button type="button" data-qty="1" aria-label="+">+</button>
+        </div>
+        <button class="btn btn--primary" type="button" data-add="{{ p.slug }}" data-use-qty>{{ t.add_to_cart }}</button>
+      </div>
+      {%- else %}
+      <div class="btn-row" style="margin-top:.5rem">
+        <a class="btn btn--ghost" href="{{ u.contact }}">{{ t.notify_me }}</a>
+      </div>
+      {%- endif %}
+
+      <ul class="tick-list" style="margin-top:1rem">
+        {%- for li in t.pdp_perks %}
+        <li><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5l3.5 3.3L14.5 5.5"/></svg><span>{{ li }}</span></li>
+        {%- endfor %}
+      </ul>
+
+      <p style="margin-top:1.5rem">{{ p.body }}</p>
+
+      <dl class="spec" style="margin-top:1.5rem">
+        <div><dt>{{ t.spec_composition }}</dt><dd>{{ p.composition }}</dd></div>
+        <div><dt>{{ t.spec_dosage }}</dt><dd>{{ p.dosage }}</dd></div>
+        <div><dt>{{ t.spec_pack }}</dt><dd>{{ p.pack }}</dd></div>
+        <div><dt>{{ t.spec_storage }}</dt><dd>{{ p.storage }}</dd></div>
+        <div><dt>EAN</dt><dd>{{ p.sku }}</dd></div>
+      </dl>
+
+      <p class="notice" style="margin-top:1.5rem">{{ p.warning }}</p>
+    </div>
+  </div>
+</section>
+
+{%- if related %}
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head reveal"><h2 style="font-size:var(--t-3)">{{ t.related }}</h2></div>
+    <div class="products-grid">
+      {%- for p in related %}
+      {% set i = loop.index %}{% include "_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{%- endif %}
+{% endblock %}

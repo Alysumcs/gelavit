@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block content %}
+
+{%- set hero_items = products %}
+<section class="hero" data-hero style="--n:{{ hero_items|length }}">
+  <div class="hero-pin">
+  <div class="hero-deco" aria-hidden="true">
+    <span class="drop drop--1"></span>
+    <span class="drop drop--2"></span>
+    <span class="drop drop--3"></span>
+    <span class="dot dot--1"></span>
+    <span class="dot dot--2"></span>
+    <span class="dot dot--3"></span>
+    <span class="bar bar--1"></span>
+    <span class="bar bar--2"></span>
+  </div>
+
+  <div class="wrap grid hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow eyebrow--brand reveal">01 — {{ t.hero_eyebrow }}</p>
+      <h1 data-split>{{ t.hero_h1|safe }}</h1>
+
+      <p class="hero-ticker reveal" style="--i:1">
+        <span class="hero-for">{{ t.hero_for }}</span>
+        <span class="ticker" aria-label="{{ t.hero_rotate|join(', ') }}">
+          <span class="ticker-track" aria-hidden="true">
+            {%- for w in t.hero_rotate %}
+            <b style="--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">{{ w }}</b>
+            {%- endfor %}
+            <b style="--ct:var(--ct1)">{{ t.hero_rotate[0] }}</b>
+          </span>
+        </span>
+      </p>
+
+      <p class="lead reveal" style="--i:2">{{ t.hero_lead }}</p>
+      <div class="btn-row reveal" style="--i:3">
+        <a class="btn btn--primary" href="{{ u.products }}">{{ t.hero_cta }}</a>
+        <a class="btn btn--ghost" href="#zlozenie">{{ t.hero_cta2 }}</a>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal" style="--i:2">
+      <div class="hero-stage" data-carousel data-n="{{ hero_items|length }}" style="--n:{{ hero_items|length }}">
+        <span class="hero-disc" aria-hidden="true"></span>
+        <svg class="hero-ring" viewBox="0 0 300 300" aria-hidden="true">
+          <circle cx="150" cy="150" r="132" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 7"/>
+        </svg>
+
+        <div class="hero-slides">
+          {%- for p in hero_items %}
+          <a class="hero-slide{% if loop.first %} is-on{% endif %}"
+             href="{{ u.product_prefix }}{{ p.slug }}.html"
+             style="--hue:{{ p.hue }}" data-hue="{{ p.hue }}"
+             tabindex="{{ '0' if loop.first else '-1' }}" aria-hidden="{{ 'false' if loop.first else 'true' }}">
+            <img src="{{ base }}assets/img/products/{{ p.img }}-tr-500.png"
+                 srcset="{{ base }}assets/img/products/{{ p.img }}-tr-500.png 500w, {{ base }}assets/img/products/{{ p.img }}-tr-1000.png 1000w"
+                 sizes="(max-width: 900px) 62vw, 300px"
+                 alt="{{ p.name }}" width="500" height="500"
+                 {% if loop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
+          </a>
+          {%- endfor %}
+        </div>
+
+        <div class="hero-orbit" role="tablist" aria-label="{{ t.nav_products }}">
+          {%- for p in hero_items %}
+          <button class="hero-dot{% if loop.first %} is-on{% endif %}" type="button" role="tab"
+                  style="--a:{{ loop.index0 }};--hue:{{ p.hue }}"
+                  aria-selected="{{ 'true' if loop.first else 'false' }}"
+                  aria-label="{{ p.name }}"><i></i></button>
+          {%- endfor %}
+        </div>
+
+        <div class="hero-seal" aria-hidden="true">
+          <svg viewBox="0 0 120 120" class="hero-seal-ring">
+            <defs><path id="sealpath" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+            <text><textPath href="#sealpath" startOffset="0">{{ t.seal_ring }}</textPath></text>
+          </svg>
+          <span class="hero-seal-core">97<i>%</i></span>
+        </div>
+      </div>
+
+      <div class="hero-pick">
+        {%- for p in hero_items %}
+        <div class="hero-pick-item{% if loop.first %} is-on{% endif %}" style="--hue:{{ p.hue }};--hue-t:{{ p.hue_t }}">
+          <span class="pct">{{ "%02d"|format(loop.index) }} — {{ p.flavour or p.cat }}</span>
+          <div class="n">{{ p.name }}</div>
+          {%- if p.stock %}
+          <a class="btn btn--ink btn--sm" href="{{ u.product_prefix }}{{ p.slug }}.html"
+             tabindex="{{ '0' if loop.first else '-1' }}">{{ t.showcase_cta }} — {{ p.price_fmt }}</a>
+          {%- else %}
+          <a class="btn btn--ghost btn--sm" href="{{ u.product_prefix }}{{ p.slug }}.html"
+             tabindex="{{ '0' if loop.first else '-1' }}">{{ t.out_of_stock }} — {{ t.view }}</a>
+          {%- endif %}
+        </div>
+        {%- endfor %}
+      </div>
+    </div>
+
+    <div class="hero-meta reveal rule-draw" style="--i:4">
+      <span><b>97 %</b> {{ t.stats[0].l }}</span>
+      <span><b>5 g</b> {{ t.stats[2].l }}</span>
+      <span><b>2015</b> {{ t.stats[3].l }}</span>
+      <span class="scroll-cue">{{ t.scroll }}<i></i></span>
+    </div>
+
+    <div class="hero-progress" aria-hidden="true"><i></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap trust-grid">
+    {%- for item in t.trust %}
+    <div class="trust-item reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.4l3 2.9L11.5 3.9"/></svg>
+      {{ item }}
+    </div>
+    {%- endfor %}
+  </div>
+</section>
+
+{% set marquee_sand = false %}{% include "_marquee.html" %}
+
+<section class="section" data-index id="preco">
+  <div class="wrap grid">
+    <div class="col-4">
+      <p class="section-index reveal" style="--c:var(--c2)">02 / {{ t.problem_eyebrow }}</p>
+      <h2 style="margin-top:var(--s5)" data-split>{{ t.problem_h2|safe }}</h2>
+    </div>
+    <div class="col-7" style="grid-column:6/13">
+      <p class="lead reveal">{{ t.problem_lead }}</p>
+      <div class="feature-grid" style="margin-top:var(--s7)">
+        {%- for f in t.problems %}
+        <div class="feature reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">
+          <span class="feature-num">{{ "%02d"|format(loop.index) }}</span>
+          <h3>{{ f.h }}</h3>
+          <p>{{ f.p }}</p>
+        </div>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "_showcase.html" %}
+
+{% include "_rail.html" %}
+
+<section class="section" data-index id="zlozenie">
+  <div class="wrap split">
+    <div>
+      <p class="section-index reveal" style="--c:var(--c5)">05 / {{ t.science_eyebrow }}</p>
+      <h2 style="margin-top:var(--s5)" data-split>{{ t.science_h2|safe }}</h2>
+      <p class="lead" style="margin-top:var(--s5)">{{ t.science_lead }}</p>
+      <ul class="tick-list" style="margin-top:var(--s6)">
+        {%- for li in t.science_points %}
+        <li class="reveal" style="--i:{{ loop.index0 }};--ct:var(--ct{{ loop.index }})"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.4l3 2.9L11.5 3.9"/></svg><span>{{ li|safe }}</span></li>
+        {%- endfor %}
+      </ul>
+      <div class="btn-row" style="margin-top:var(--s6)">
+        <a class="btn btn--ink" href="{{ u.blog_prefix }}kolagen-nenahraditelna-bielkovina.html">{{ t.science_cta }}</a>
+      </div>
+    </div>
+    <div class="split-media">
+      <div class="media-frame reveal-img">
+        {% with pic_stem = 'assets/img/photo/prasok', pic_w = [800], pic_fmt = 'jpg',
+                pic_alt = t.science_alt, pic_sizes = '(max-width: 900px) 92vw, 500px', pic_ratio = 1.49 %}
+        {% include "_pic.html" %}
+        {% endwith %}
+      </div>
+      <div class="seal-row reveal">
+        <div><img src="{{ base }}assets/img/badge/97-{{ lang }}-320.png" alt="" width="60" height="60" loading="lazy"></div>
+        <div><img src="{{ base }}assets/img/badge/hydro-5000-320.png" alt="" width="60" height="60" loading="lazy"></div>
+        <div><img src="{{ base }}assets/img/badge/bio-320.png" alt="" width="60" height="60" loading="lazy"></div>
+        <div><img src="{{ base }}assets/img/badge/{{ 'vyrobene-sk' if lang == 'sk' else 'made-in-sk' }}-320.png" alt="" width="60" height="60" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink" data-index id="cisla">
+  <div class="wrap">
+    <p class="section-index reveal" style="--c:var(--c1);color:#A9B8CB">06 / {{ t.stats_eyebrow }}</p>
+    <h2 style="color:#fff;margin-top:var(--s5);max-width:14ch" data-split>{{ t.stats_h2|safe }}</h2>
+    <div class="stats" style="margin-top:var(--s8)">
+      {%- for s in t.stats %}
+      <div class="stat reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})"><b data-count="{{ s.n }}">{{ s.n }}</b><span>{{ s.l }}</span></div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" data-index id="ako">
+  <div class="wrap grid">
+    <div class="col-4">
+      <p class="section-index reveal" style="--c:var(--c2)">07 / {{ t.how_eyebrow }}</p>
+      <h2 style="margin-top:var(--s5)" data-split>{{ t.how_h2|safe }}</h2>
+    </div>
+    <div style="grid-column:6/13">
+      <div class="feature-grid">
+        {%- for s in t.how_steps %}
+        <div class="feature reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">
+          <span class="feature-num">{{ t.step }} {{ "%02d"|format(loop.index) }}</span>
+          <h3>{{ s.h }}</h3>
+          <p>{{ s.p }}</p>
+        </div>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section--tight section--flush">
+  <div class="wrap">
+    <div class="reveal-img" style="border:1px solid var(--line)">
+      {% with pic_stem = 'assets/img/photo/rada-siroka', pic_w = [800, 1600], pic_fmt = 'jpg',
+              pic_alt = t.band_alt, pic_sizes = '100vw', pic_ratio = 2.357 %}
+      {% include "_pic.html" %}
+      {% endwith %}
+    </div>
+  </div>
+</section>
+
+<section class="section" data-index id="recenzie">
+  <div class="wrap">
+    <p class="section-index reveal" style="--c:var(--c3)">08 / {{ t.quotes_eyebrow }}</p>
+    <h2 style="margin-top:var(--s5);max-width:18ch" data-split>{{ t.quotes_h2|safe }}</h2>
+    <div class="quote-grid" style="margin-top:var(--s7)">
+      {%- for q in t.quotes %}
+      <blockquote class="quote reveal" style="--i:{{ loop.index0 }};--c:var(--c{{ loop.index }});--ct:var(--ct{{ loop.index }})">
+        <div class="stars" aria-label="5/5">★★★★★</div>
+        <p>„{{ q.q }}"</p>
+        <footer>{{ q.a }}</footer>
+      </blockquote>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" data-index id="faq">
+  <div class="wrap grid">
+    <div class="col-4">
+      <p class="section-index reveal" style="--c:var(--c4)">09 / FAQ</p>
+      <h2 style="margin-top:var(--s5)" data-split>{{ t.faq_h2 }}</h2>
+    </div>
+    <div style="grid-column:6/13">
+      <div class="faq">
+        {%- for f in t.faq %}
+        <details{% if loop.first %} open{% endif %}>
+          <summary>{{ f.q }}</summary>
+          <div class="faq-a">{{ f.a|safe }}</div>
+        </details>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink">
+  <div class="wrap grid" style="align-items:end">
+    <div class="col-7">
+      <p class="section-index" style="--c:var(--c5);color:#A9B8CB">10 / {{ t.nav_products }}</p>
+      <h2 style="color:#fff;margin-top:var(--s5)" data-split>{{ t.cta_h2|safe }}</h2>
+    </div>
+    <div style="grid-column:9/13">
+      <p style="color:#A9B8CB">{{ t.cta_p }}</p>
+      <div class="btn-row" style="margin-top:var(--s5)">
+        <a class="btn btn--primary" href="{{ u.products }}">{{ t.hero_cta }}</a>
+        <a class="btn btn--light" href="{{ u.contact }}">{{ t.nav_contact }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

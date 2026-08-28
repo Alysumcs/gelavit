@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+  <div class="wrap--narrow center">
+    <div style="width:76px;height:76px;border-radius:50%;background:var(--sage-subtle);display:grid;place-items:center;margin:0 auto 2rem">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#47603F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.3L19 7"/></svg>
+    </div>
+    <h1 style="font-size:var(--t-3)">{{ t.thanks_h1 }}</h1>
+    <p class="lead" style="margin-top:1.25rem">{{ t.thanks_p }}</p>
+    <div class="info-card" style="margin-top:2.5rem;text-align:left">
+      <h3 style="font-size:1.2rem">{{ t.thanks_next }}</h3>
+      <ul class="tick-list" style="margin-top:1rem">
+        {%- for li in t.thanks_steps %}
+        <li><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5l3.5 3.3L14.5 5.5"/></svg><span>{{ li|safe }}</span></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    <div class="btn-row" style="justify-content:center;margin-top:2rem">
+      <a class="btn btn--ink" href="{{ u.products }}">{{ t.continue_shopping }}</a>
+      <a class="btn btn--ghost" href="{{ u.contact }}">{{ t.nav_contact }}</a>
+    </div>
+  </div>
+</section>
+<script>try{localStorage.setItem('gelavit_cart_v1','[]')}catch(e){}</script>
+{% endblock %}

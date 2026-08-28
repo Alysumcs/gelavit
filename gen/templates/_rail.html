@@ -1,0 +1,17 @@
+<section class="rail" data-index id="produkty" aria-label="{{ t.shop_h2|striptags }}">
+  <div class="rail-pin">
+    <div class="rail-head reveal">
+      <div>
+        <p class="section-index reveal" style="--c:var(--c4)">04 / {{ t.shop_eyebrow }}</p>
+        <h2 style="margin-top:var(--s4)" data-split>{{ t.shop_h2|safe }}</h2>
+      </div>
+      <a class="link-arrow" href="{{ u.products }}">{{ t.shop_all }}
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 7h9M7.6 3.6L11 7l-3.4 3.4"/></svg></a>
+    </div>
+    <div class="rail-track">
+      {%- for p in products %}
+      {% set i = loop.index %}{% include "_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

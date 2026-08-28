@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / {{ t.nav_cart }}</p>
+    <h1 style="font-size:var(--t-3)">{{ t.cart_h1 }}</h1>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <div id="cart-empty" class="empty" hidden>
+      <h3>{{ t.cart_empty_h }}</h3>
+      <p class="muted" style="margin-top:.75rem">{{ t.cart_empty_p }}</p>
+      <a class="btn btn--primary" href="{{ u.products }}" style="margin-top:1.5rem">{{ t.hero_cta }}</a>
+    </div>
+
+    <div id="cart-body" class="cols-2" hidden>
+      <div>
+        <div id="cart-lines"></div>
+        <a class="link-arrow" href="{{ u.products }}" style="margin-top:1.5rem">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="transform:rotate(180deg)"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5"/></svg>
+          {{ t.continue_shopping }}</a>
+      </div>
+      <aside class="summary">
+        <h3 style="font-size:1.3rem;margin-bottom:1rem">{{ t.summary }}</h3>
+        <div class="summary-row"><span>{{ t.subtotal }}</span><span id="sum-sub">—</span></div>
+        <div class="summary-row"><span>{{ t.shipping }}</span><span id="sum-ship" class="muted">{{ t.at_checkout }}</span></div>
+        <div class="summary-row summary-row--total"><span>{{ t.total }}</span><span id="sum-total">—</span></div>
+        <p id="free-ship" class="muted" style="font-size:.8125rem;margin-top:.75rem" hidden></p>
+        <a class="btn btn--primary btn--wide" href="{{ u.checkout }}" style="margin-top:1.25rem">{{ t.to_checkout }}</a>
+        <p class="muted" style="font-size:.75rem;margin-top:1rem;text-align:center">{{ t.cart_note }}</p>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

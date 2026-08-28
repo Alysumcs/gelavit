@@ -1,0 +1,43 @@
+<section class="showcase" data-index id="prichute" aria-label="{{ t.showcase_h2|striptags }}">
+  <div class="showcase-pin">
+    <div class="showcase-head">
+      <p class="section-index reveal" style="--c:var(--c3)">03 / {{ t.showcase_eyebrow }}</p>
+      <h2 style="margin-top:var(--s4);font-size:var(--t-3);max-width:20ch" data-split>{{ t.showcase_h2|safe }}</h2>
+    </div>
+
+    <div class="showcase-grid">
+      <div class="showcase-names">
+        {%- for p in showcase %}
+        <div class="showcase-name{% if loop.first %} is-on{% endif %}" style="--hue:{{ p.hue }};--hue-t:{{ p.hue_t }}">
+          <span class="pct">{{ "%02d"|format(loop.index) }} — {{ p.badge }}</span>
+          <div class="n">{{ p.flavour }}</div>
+          <p class="d">{{ p.short }}</p>
+          <a class="btn btn--ink btn--sm go" href="{{ u.product_prefix }}{{ p.slug }}.html">{{ t.showcase_cta }} — {{ p.price_fmt }}</a>
+        </div>
+        {%- endfor %}
+      </div>
+
+      <div class="showcase-stage">
+        {%- for p in showcase %}
+        <div class="showcase-slide{% if loop.first %} is-on{% endif %}" style="--hue:{{ p.hue }}">
+          <span class="showcase-disc" aria-hidden="true"></span>
+          <img src="{{ base }}assets/img/products/{{ p.img }}-tr-500.png"
+               srcset="{{ base }}assets/img/products/{{ p.img }}-tr-500.png 500w, {{ base }}assets/img/products/{{ p.img }}-tr-1000.png 1000w"
+               sizes="(max-width: 980px) 70vw, 400px"
+               alt="{{ p.name }}" width="500" height="500" loading="lazy" decoding="async">
+        </div>
+        {%- endfor %}
+      </div>
+
+      <div class="showcase-side">
+        <div class="showcase-dots" role="tablist" aria-label="{{ t.showcase_eyebrow }}">
+          {%- for p in showcase %}
+          <button class="showcase-dot{% if loop.first %} is-on{% endif %}" type="button" role="tab"
+                  aria-label="{{ p.flavour }}" style="--hue:{{ p.hue }}">{{ "%02d"|format(loop.index) }}<i></i></button>
+          {%- endfor %}
+        </div>
+        <div class="showcase-progress" aria-hidden="true"><i></i></div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<article>
+  <section class="page-hero">
+    <div class="wrap--narrow">
+      <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / <a href="{{ u.blog }}">{{ t.nav_blog }}</a></p>
+      <time class="eyebrow" datetime="{{ post.date }}">{{ post.date_fmt }}</time>
+      <h1 style="margin-top:1rem;font-size:var(--t-3)">{{ post.title }}</h1>
+    </div>
+  </section>
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="photo-band reveal-img">
+        {% with pic_stem = 'assets/img/photo/' + post.photo, pic_w = [800, 1600], pic_fmt = 'jpg',
+                pic_alt = post.title, pic_sizes = '100vw', pic_eager = true, pic_ratio = 1.5 %}
+        {% include "_pic.html" %}
+        {% endwith %}
+      </div>
+    </div>
+  </section>
+  <section class="section section--tight">
+    <div class="wrap--narrow prose">{{ post.html|safe }}</div>
+  </section>
+</article>
+
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head reveal"><h2 style="font-size:var(--t-3)">{{ t.related_products }}</h2></div>
+    <div class="products-grid">
+      {%- for p in featured %}
+      {% set i = loop.index %}{% include "_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

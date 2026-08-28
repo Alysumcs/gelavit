@@ -1,0 +1,13 @@
+{#- <picture> s WebP a fallbackom.
+    pic_stem  – cesta bez prípony a šírky, napr. "assets/img/products/xy"
+    pic_w     – zoznam šírok, napr. [400, 800]
+    pic_fmt   – "png" alebo "jpg"
+    pic_alt, pic_cls, pic_sizes, pic_eager, pic_ratio -#}
+<picture>
+  <source type="image/webp" srcset="{% for w in pic_w %}{{ base }}{{ pic_stem }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"{% if pic_sizes %} sizes="{{ pic_sizes }}"{% endif %}>
+  <img src="{{ base }}{{ pic_stem }}-{{ pic_w[0] }}.{{ pic_fmt }}"
+       srcset="{% for w in pic_w %}{{ base }}{{ pic_stem }}-{{ w }}.{{ pic_fmt }} {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"{% if pic_sizes %} sizes="{{ pic_sizes }}"{% endif %}
+       alt="{{ pic_alt }}"{% if pic_cls %} class="{{ pic_cls }}"{% endif %}
+       width="{{ pic_w[0] }}" height="{{ (pic_w[0] / (pic_ratio|default(1))) | round | int }}"
+       {% if pic_eager %}fetchpriority="high" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %}>
+</picture>

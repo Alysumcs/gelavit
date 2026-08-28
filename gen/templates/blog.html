@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / {{ t.nav_blog }}</p>
+    <p class="eyebrow eyebrow--brand">{{ t.blog_eyebrow }}</p>
+    <h1 style="margin-top:var(--s4);font-size:var(--t-4)">{{ t.blog_h1 }}</h1>
+    <p class="lead" style="margin-top:var(--s5)">{{ t.blog_lead }}</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap post-grid">
+    {%- for post in posts %}
+    <article class="post-card reveal d{{ (loop.index % 4) + 1 }}">
+      <a class="post-media reveal-img" href="{{ u.blog_prefix }}{{ post.slug }}.html" tabindex="-1" aria-hidden="true">
+        {% with pic_stem = 'assets/img/photo/' + post.photo, pic_w = [800], pic_fmt = 'jpg',
+                pic_alt = '', pic_sizes = '(max-width: 700px) 92vw, 360px', pic_ratio = 1.5 %}
+        {% include "_pic.html" %}
+        {% endwith %}
+      </a>
+      <time datetime="{{ post.date }}">{{ post.date_fmt }}</time>
+      <h3><a href="{{ u.blog_prefix }}{{ post.slug }}.html">{{ post.title }}</a></h3>
+      <p>{{ post.excerpt }}</p>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{% endblock %}

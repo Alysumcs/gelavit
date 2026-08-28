@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / {{ t.nav_products }}</p>
+    <p class="eyebrow eyebrow--brand">{{ t.shop_eyebrow }}</p>
+    <h1 style="margin-top:var(--s4);font-size:var(--t-4)">{{ t.products_h1|safe }}</h1>
+    <p class="lead" style="margin-top:var(--s5)">{{ t.products_lead }}</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="products-grid">
+      {%- for p in products %}
+      {% set i = loop.index %}{% include "_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+{% set marquee_sand = true %}{% include "_marquee.html" %}
+
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head center reveal"><h2>{{ t.faq_h2 }}</h2></div>
+    <div class="wrap--narrow faq">
+      {%- for f in t.faq %}
+      <details{% if loop.first %} open{% endif %}><summary>{{ f.q }}</summary><div class="faq-a">{{ f.a|safe }}</div></details>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+<article class="card reveal" data-cursor="{{ t.view }}" style="--hue:{{ p.hue }};--hue-t:{{ p.hue_t }}">
+  {%- if not p.stock %}<span class="badge badge--out">{{ t.out_of_stock }}</span>
+  {%- elif p.featured %}<span class="badge">{{ t.bestseller }}</span>{%- endif %}
+  <a class="card-media" href="{{ u.product_prefix }}{{ p.slug }}.html" tabindex="-1" aria-hidden="true">
+    {% with pic_stem = 'assets/img/products/' + p.img, pic_w = [400, 800], pic_fmt = 'png',
+            pic_alt = p.name, pic_sizes = '(max-width: 700px) 90vw, 300px' %}
+    {% include "_pic.html" %}
+    {% endwith %}
+  </a>
+  <div class="card-body">
+    <span class="card-cat">{{ "%02d"|format(i|default(1)) }} — {{ p.cat }}</span>
+    <h3><a href="{{ u.product_prefix }}{{ p.slug }}.html">{{ p.name }}</a></h3>
+    <p class="card-desc">{{ p.short }}</p>
+    <div class="card-foot">
+      <span class="price">{{ p.price_fmt }}<small>{{ p.pack }}</small></span>
+      {%- if p.stock %}
+      <button class="btn btn--ink btn--sm" type="button" data-add="{{ p.slug }}">{{ t.add_to_cart }}</button>
+      {%- else %}
+      <span class="btn btn--ghost btn--sm is-disabled">{{ t.out_of_stock }}</span>
+      {%- endif %}
+    </div>
+  </div>
+</article>

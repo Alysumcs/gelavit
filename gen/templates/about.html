@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / {{ t.nav_about }}</p>
+    <p class="eyebrow eyebrow--brand">{{ t.about_eyebrow }}</p>
+    <h1 style="margin-top:var(--s4);font-size:var(--t-4);max-width:16ch">{{ t.about_h1|safe }}</h1>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap split">
+    <div class="prose reveal">
+      {{ t.about_story|safe }}
+      <p style="margin-top:2rem"><strong>Nina Bernardo</strong><br><span class="muted">{{ t.about_role }}</span></p>
+    </div>
+    <div class="split-media reveal d2">
+      <div class="media-frame reveal-img">
+        {% with pic_stem = 'assets/img/photo/nina-stanok', pic_w = [800], pic_fmt = 'jpg',
+                pic_alt = t.about_photo_alt, pic_sizes = '(max-width: 980px) 92vw, 540px', pic_ratio = 0.5875 %}
+        {% include "_pic.html" %}
+        {% endwith %}
+      </div>
+      <div class="seal-row" style="margin-top:1.25rem">
+        <img src="{{ base }}assets/img/badge/{{ 'vyrobene-sk' if lang == 'sk' else 'made-in-sk' }}-320.png" alt="" width="76" height="76" loading="lazy">
+        <img src="{{ base }}assets/img/badge/bio-320.png" alt="" width="76" height="76" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink">
+  <div class="wrap">
+    <div class="section-head center reveal"><p class="eyebrow">{{ t.about_values_eyebrow }}</p><h2 style="color:#fff">{{ t.about_values_h2 }}</h2></div>
+    <div class="feature-grid">
+      {%- for v in t.about_values %}
+      <div class="feature reveal d{{ loop.index }}" style="border-top-color:rgba(255,255,255,.25)">
+        <span class="feature-num" style="color:#F6C6A9">{{ "%02d"|format(loop.index) }}</span>
+        <h3 style="color:#fff">{{ v.h }}</h3>
+        <p style="color:#A9BBC9">{{ v.p }}</p>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal"><p class="eyebrow">{{ t.about_history_eyebrow }}</p><h2>{{ t.about_history_h2 }}</h2></div>
+    <ul class="pos-list reveal" style="max-width:760px">
+      {%- for h in t.about_history %}
+      <li style="display:grid;grid-template-columns:110px 1fr;gap:1.5rem">
+        <b style="font-family:var(--font-display);font-size:1.15rem">{{ h.y }}</b>
+        <span style="color:var(--fg-primary);font-size:.9375rem">{{ h.t }}</span>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section--sand">
+  <div class="wrap">
+    <div class="section-head reveal"><h2 style="font-size:var(--t-3)">{{ t.shop_h2|striptags }}</h2></div>
+    <div class="products-grid">
+      {%- for p in featured %}
+      {% set i = loop.index %}{% include "_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

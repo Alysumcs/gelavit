@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ site_url }}{{ canonical }}">
+{%- for l, href in alternates.items() %}
+<link rel="alternate" hreflang="{{ l }}" href="{{ site_url }}{{ href }}">
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ site_url }}{{ alternates['sk'] }}">
+<meta property="og:type" content="{{ og_type|default('website') }}">
+<meta property="og:site_name" content="GelaVit">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ site_url }}{{ canonical }}">
+<meta property="og:locale" content="{{ {'sk':'sk_SK','en':'en_GB','de':'de_DE'}[lang] }}">
+<meta property="og:image" content="{{ site_url }}/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFFFFF">
+<script>document.documentElement.className+=" js";setTimeout(function(){var n=document.querySelectorAll(".reveal:not(.is-in)");for(var i=0;i<n.length;i++)n[i].classList.add("is-in")},2500);</script>
+<link rel="icon" href="{{ base }}assets/img/favicon.png" sizes="any">
+<link rel="apple-touch-icon" href="{{ base }}assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ base }}assets/css/style.css">
+<link rel="stylesheet" href="{{ base }}assets/css/motion.css">
+{%- if schema %}
+<script type="application/ld+json">{{ schema }}</script>
+{%- endif %}
+<noscript><style>body{opacity:1!important}.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</head>
+<body data-base="{{ base }}">
+
+<div class="preloader" aria-hidden="true">
+  <div class="preloader-inner">
+    <img src="{{ base }}assets/img/logo.svg" alt="" width="150" height="56">
+    <div class="preloader-num">00</div>
+    <div class="preloader-bar"><i></i></div>
+    <div class="preloader-meta"><span>{{ t.hero_eyebrow }}</span><span>Gelavit s. r. o. — Bratislava</span></div>
+  </div>
+</div>
+
+<a class="skip" href="#main">{{ t.skip }}</a>
+
+<div class="announce">{{ t.announce|safe }}</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="{{ u.home }}" aria-label="GelaVit Pure">
+      <img src="{{ base }}assets/img/logo.svg" alt="GelaVit Pure" width="150" height="56">
+    </a>
+    <nav class="nav-links" aria-label="{{ t.nav_label }}">
+      <a href="{{ u.products }}"{% if page=='products' %} aria-current="page"{% endif %}>{{ t.nav_products }}</a>
+      <a href="{{ u.about }}"{% if page=='about' %} aria-current="page"{% endif %}>{{ t.nav_about }}</a>
+      <a href="{{ u.blog }}"{% if page=='blog' %} aria-current="page"{% endif %}>{{ t.nav_blog }}</a>
+      <a href="{{ u.contact }}"{% if page=='contact' %} aria-current="page"{% endif %}>{{ t.nav_contact }}</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="lang" role="group" aria-label="{{ t.lang_label }}">
+        {%- for l, href in switch.items() %}
+        <a href="{{ href }}" hreflang="{{ l }}"{% if l==lang %} aria-current="true"{% endif %}>{{ l|upper }}</a>
+        {%- endfor %}
+      </div>
+      <a class="cart-btn" href="{{ u.cart }}" aria-label="{{ t.nav_cart }}">
+        {{ t.nav_cart }} [<span class="cart-count" aria-live="polite">0</span>]
+      </a>
+      <button class="burger" type="button" aria-label="{{ t.menu }}"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="chip-strip" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+</header>
+
+<nav class="mobile-menu" aria-label="{{ t.nav_label }}">
+  <div class="mm-top">
+    <img src="{{ base }}assets/img/logo.svg" alt="GelaVit Pure" width="130" height="49">
+    <button class="mm-close" type="button" aria-label="{{ t.close }}">&times;</button>
+  </div>
+  <div class="mm-links">
+    <a href="{{ u.home }}">{{ t.nav_home }}</a>
+    <a href="{{ u.products }}">{{ t.nav_products }}</a>
+    <a href="{{ u.about }}">{{ t.nav_about }}</a>
+    <a href="{{ u.blog }}">{{ t.nav_blog }}</a>
+    <a href="{{ u.contact }}">{{ t.nav_contact }}</a>
+    <a href="{{ u.cart }}">{{ t.nav_cart }} <small>[<span class="cart-count" aria-hidden="true">0</span>]</small></a>
+  </div>
+  <div class="mm-foot">
+    <div class="lang" role="group" aria-label="{{ t.lang_label }}">
+      {%- for l, href in switch.items() %}
+      <a href="{{ href }}" hreflang="{{ l }}"{% if l==lang %} aria-current="true"{% endif %}>{{ l|upper }}</a>
+      {%- endfor %}
+    </div>
+    <a class="mm-contact" href="tel:+421915178349">+421 915 178 349</a>
+    <a class="mm-contact" href="mailto:info@gelavit.sk">info@gelavit.sk</a>
+  </div>
+</nav>
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="{{ u.home }}">
+          <img src="{{ base }}assets/img/logo-light.svg" alt="GelaVit Pure" width="160" height="60">
+        </a>
+        <p style="margin-top:1rem;font-size:.875rem;max-width:34ch">{{ t.footer_blurb }}</p>
+        <div class="social">
+          <a href="https://www.facebook.com/gelavit" aria-label="Facebook" rel="noopener" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M9.2 15V8.6h2.1l.3-2.5H9.2V4.5c0-.7.2-1.2 1.2-1.2h1.3V1.1C11.5 1.1 10.7 1 9.8 1 7.9 1 6.6 2.2 6.6 4.2v1.9H4.5v2.5h2.1V15h2.6z"/></svg></a>
+          <a href="https://www.instagram.com/gelavit" aria-label="Instagram" rel="noopener" target="_blank"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="3.6"/><circle cx="8" cy="8" r="2.8"/><circle cx="11.6" cy="4.4" r=".7" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h5>{{ t.footer_shop }}</h5>
+        <ul>
+          <li><a href="{{ u.products }}">{{ t.nav_products }}</a></li>
+          {%- for p in products[:4] %}
+          <li><a href="{{ u.product_prefix }}{{ p.slug }}.html">{{ p.name }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+      <div>
+        <h5>{{ t.footer_info }}</h5>
+        <ul>
+          <li><a href="{{ u.about }}">{{ t.nav_about }}</a></li>
+          <li><a href="{{ u.blog }}">{{ t.nav_blog }}</a></li>
+          <li><a href="{{ u.howto }}">{{ t.nav_howto }}</a></li>
+          <li><a href="{{ u.terms }}">{{ t.nav_terms }}</a></li>
+          <li><a href="{{ u.privacy }}">{{ t.nav_privacy }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>{{ t.footer_contact }}</h5>
+        <ul>
+          <li><a href="mailto:info@gelavit.sk">info@gelavit.sk</a></li>
+          <li><a href="tel:+421915178349">+421 915 178 349</a></li>
+          <li style="font-size:.875rem">Gelavit s.&nbsp;r.&nbsp;o.<br>Kopčianska 8<br>851 01 Bratislava</li>
+        </ul>
+        <h5 style="margin-top:1.75rem">{{ t.newsletter_title }}</h5>
+        <form class="newsletter" action="{{ newsletter_action }}" method="post">
+          <label for="nl" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ t.email }}</label>
+          <input id="nl" type="email" name="email" placeholder="{{ t.email }}" required>
+          <button class="btn btn--primary btn--sm" type="submit">{{ t.newsletter_cta }}</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {{ year }} Gelavit s. r. o. · IČO 48 288 691 · IČ DPH SK2120117241</span>
+      <span>{{ t.footer_disclaimer }}</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+window.GELAVIT_CONFIG = {{ config_json|safe }};
+window.GELAVIT_CATALOG = {{ catalog_json|safe }};
+window.GELAVIT_I18N = {{ i18n_json|safe }};
+</script>
+<script src="{{ base }}assets/js/shop.js" defer></script>
+<script src="{{ base }}assets/js/motion.js" defer></script>
+</body>
+</html>

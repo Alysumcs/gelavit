@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap--narrow">
+    <p class="crumbs"><a href="{{ u.home }}">{{ t.nav_home }}</a> / {{ heading }}</p>
+    <h1 style="font-size:var(--t-3)">{{ heading }}</h1>
+    {%- if intro %}<p class="lead" style="margin-top:1.25rem">{{ intro }}</p>{%- endif %}
+  </div>
+</section>
+<section class="section section--tight">
+  <div class="wrap--narrow prose">{{ body|safe }}</div>
+</section>
+{% endblock %}

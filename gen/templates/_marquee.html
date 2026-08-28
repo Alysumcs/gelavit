@@ -1,0 +1,5 @@
+<div class="marquee{{ ' marquee--alt' if marquee_sand else '' }}" aria-hidden="true">
+  <div class="marquee-track"><ul>
+    {%- for m in t.marquee %}<li><i></i>{{ m }}</li>{%- endfor %}
+  </ul></div>
+</div>
