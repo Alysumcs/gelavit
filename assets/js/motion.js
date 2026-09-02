@@ -288,17 +288,62 @@
       });
     });
 
+    /* --- automatické prepínanie ---------------------------------------
+       Produkty sa striedajú samy. Keď používateľ roluje, vedie rolovanie;
+       po zastavení sa časovač o chvíľu rozbehne znova. Nad scénou sa
+       automat pozastaví, aby si stihol pozrieť, čo ho zaujalo. --------- */
+    var AUTO_MS = 3800, RESUME_MS = 2600;
+    var autoTimer = null, resumeTimer = null, hold = false;
+
+    function inView() {
+      var r = hero.getBoundingClientRect();
+      return r.bottom > 80 && r.top < innerHeight - 80;
+    }
+    function autoTick() {
+      if (hold || document.hidden || !inView()) return;
+      setActive((cur + 1) % slides.length);
+    }
+    function autoStart() {
+      if (reduce) return;
+      clearInterval(autoTimer);
+      autoTimer = setInterval(autoTick, AUTO_MS);
+    }
+    function autoPause(ms) {
+      hold = true;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(function () { hold = false; }, ms || RESUME_MS);
+    }
+
+    if (stage) {
+      stage.addEventListener('pointerenter', function () { hold = true; });
+      stage.addEventListener('pointerleave', function () { hold = false; });
+    }
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () { autoPause(6000); });
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) autoStart();
+    });
+    autoStart();
+
     if (staticMode) return;
 
+    var lastY = null;
     Scroll.on(function (y) {
       var total = hero.offsetHeight - innerHeight;
       if (total <= 0) return;
       var p = clamp(y / total, 0, 1);
-      var idx = clamp(Math.floor(p * slides.length * 0.999), 0, slides.length - 1);
-      setActive(idx);
       if (fill) fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
       if (ring) ring.style.transform = 'rotate(' + (p * 150).toFixed(2) + 'deg)';
       if (cue) cue.style.opacity = 1 - clamp(p * 3.4, 0, 1);
+
+      // index prepisujeme len keď sa naozaj roluje — inak by rolovanie
+      // hneď prevalcovalo to, čo práve prepol časovač
+      if (lastY !== null && Math.abs(y - lastY) < 0.5) return;
+      lastY = y;
+      var idx = clamp(Math.floor(p * slides.length * 0.999), 0, slides.length - 1);
+      setActive(idx);
+      autoPause();
       var inner = (p * slides.length) % 1;
       slides[idx].style.setProperty('--drift', (inner - 0.5).toFixed(3));
     });
