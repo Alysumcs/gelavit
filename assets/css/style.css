@@ -691,13 +691,13 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 .hero-stage { --shape: var(--stage-hue, var(--c1)); }
 .showcase-slide { --shape: var(--hue, var(--acc)); }
 .pdp-stage { --shape: var(--hue, var(--acc)); }
-.hero-blob { width: 97%; aspect-ratio: 1; }
+.hero-blob { width: 104%; aspect-ratio: 1; }
 .showcase-blob { width: min(52vh, 430px); aspect-ratio: 1; z-index: 0; }
 
 /* Packshoty majú skutočnú alfu (viď cutout() v gen/images.py),
    takže farebný tvar je naozaj za produktom, nie cez neho. */
 
-.hero-slides { position: relative; width: 68%; aspect-ratio: 1; display: grid; }
+.hero-slides { position: relative; width: 88%; aspect-ratio: 1; display: grid; }
 .hero-slide {
   grid-area: 1 / 1; display: grid; place-items: center;
   opacity: 0; transform: translateY(24px) scale(.94);
@@ -709,7 +709,7 @@ legend { font-family: var(--mono); font-size: var(--t--1); letter-spacing: .1em;
 
 /* bodky rozmiestnené po kruhu */
 .hero-orbit { position: absolute; inset: 0; --orbit-r: 188px; }
-@supports (width: 1cqi) { .hero-orbit { --orbit-r: 46cqi; } }
+@supports (width: 1cqi) { .hero-orbit { --orbit-r: 50cqi; } }
 .hero-dot {
   position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; padding: 0;
   background: none; border: 0; cursor: pointer; display: grid; place-items: center;
