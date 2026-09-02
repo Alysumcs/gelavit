@@ -64,6 +64,20 @@ def fmt_date(iso, lang):
     return f"{d}. {MONTHS[lang][m-1]} {y}"
 
 
+def meta(text, limit=158):
+    """Skráti meta description na celé slovo.
+
+    Tvrdé orezanie na 158 znakov sekalo uprostred slova — nemecká úvodná
+    stránka končila na „...seit 2015 in der Sl". Vo výsledkoch vyhľadávania
+    to pôsobí ako chyba, preto režeme po poslednej medzere a dopĺňame trojbodku.
+    """
+    text = re.sub(r"\s+", " ", re.sub("<[^>]+>", "", text)).strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit].rsplit(" ", 1)[0].rstrip(" ,;:—–-")
+    return cut + "…"
+
+
 def products_for(lang):
     out = []
     for p in data["products"]:
@@ -227,7 +241,7 @@ def build():
             alternates=alternates_for("home"),
             title=f'{brand} — {t["hero_eyebrow"]} | {t["nav_products"]}' if lang != "sk"
                   else "GelaVit Pure® — bioaktívny kolagén typu I s vitamínom C",
-            description=t["hero_lead"][:158],
+            description=meta(t["meta_home"]),
             hero_product=prods[0], showcase=showcase,
             schema=org_schema() + "</script><script type=\"application/ld+json\">" + faq_schema(lang),
         ), 1.0))
@@ -236,7 +250,7 @@ def build():
         urls.append((render(lang, "products.html", u["products"],
             page="products", canonical=alternates_for("products")[lang],
             alternates=alternates_for("products"),
-            title=f'{t["products_h1"]} | {brand}', description=t["products_lead"][:158],
+            title=f'{t["products_h1"]} | {brand}', description=meta(t["products_lead"]),
             schema=faq_schema(lang),
         ), 0.9))
 
@@ -246,7 +260,7 @@ def build():
             rel = [x for x in prods if x["slug"] != p["slug"] and x["stock"]][:3]
             urls.append((render(lang, "product.html", f'{u["product_prefix"]}{p["slug"]}.html',
                 page="products", canonical=url, alternates=alternates_for("product", p["slug"]),
-                title=f'{p["name"]} | {brand}', description=p["short"][:158],
+                title=f'{p["name"]} | {brand}', description=meta(p["short"]),
                 p=p, related=rel, og_type="product",
                 schema=product_schema(p, lang, url),
             ), 0.8))
@@ -259,18 +273,18 @@ def build():
 
         render(lang, "cart.html", u["cart"], page="cart", canonical=alternates_for("cart")[lang],
                alternates=alternates_for("cart"), title=f'{t["cart_h1"]} | {brand}',
-               description=t["cart_note"])
+               description=meta(t["cart_note"]))
         render(lang, "checkout.html", u["checkout"], page="cart", canonical=alternates_for("checkout")[lang],
                alternates=alternates_for("checkout"), title=f'{t["checkout_h1"]} | {brand}',
-               description=t["checkout_note"], shipping={"methods": ship}, payment=pay)
+               description=meta(t["checkout_note"]), shipping={"methods": ship}, payment=pay)
         render(lang, "thanks.html", u["thanks"], page="", canonical=alternates_for("thanks")[lang],
                alternates=alternates_for("thanks"), title=f'{t["thanks_h1"]} | {brand}',
-               description=t["thanks_p"])
+               description=meta(t["thanks_p"]))
 
         # --- o nás
         urls.append((render(lang, "about.html", u["about"], page="about",
             canonical=alternates_for("about")[lang], alternates=alternates_for("about"),
-            title=f'{t["nav_about"]} | {brand}', description=re.sub("<[^>]+>", "", t["about_story"])[:158],
+            title=f'{t["nav_about"]} | {brand}', description=meta(t["about_story"]),
         ), 0.7))
 
         # --- kontakt
@@ -278,19 +292,19 @@ def build():
                 "hours": p["hours"], "web": p["web"]} for p in POINTS]
         urls.append((render(lang, "contact.html", u["contact"], page="contact",
             canonical=alternates_for("contact")[lang], alternates=alternates_for("contact"),
-            title=f'{t["contact_h1"]} | {brand}', description=t["contact_lead"][:158], points=pts,
+            title=f'{t["contact_h1"]} | {brand}', description=meta(t["contact_lead"]), points=pts,
         ), 0.7))
 
         # --- blog
         urls.append((render(lang, "blog.html", u["blog"], page="blog",
             canonical=alternates_for("blog")[lang], alternates=alternates_for("blog"),
-            title=f'{t["blog_h1"]} | {brand}', description=t["blog_lead"][:158], posts=posts,
+            title=f'{t["blog_h1"]} | {brand}', description=meta(t["blog_lead"]), posts=posts,
         ), 0.7))
         for po in posts:
             urls.append((render(lang, "post.html", f'{u["blog_prefix"]}{po["slug"]}.html',
                 page="blog", canonical="/" + DIR[lang] + u["blog_prefix"] + po["slug"] + ".html",
                 alternates=alternates_for("post", po["slug"]),
-                title=f'{po["title"]} | {brand}', description=po["excerpt"][:158],
+                title=f'{po["title"]} | {brand}', description=meta(po["excerpt"]),
                 post=po, og_type="article",
             ), 0.6))
 
@@ -299,16 +313,20 @@ def build():
             body, heading = content.legal(key, lang, T, URLS, DIR)
             urls.append((render(lang, "page.html", u[key], page="",
                 canonical=alternates_for(key)[lang], alternates=alternates_for(key),
-                title=f'{heading} | {brand}', description=heading + " — GelaVit",
+                title=f'{heading} | {brand}',
+                description=meta(f"{heading} — {brand}. " + content.strip_notice(body)),
                 heading=heading, body=body,
             ), 0.3))
 
     # 404
     for lang in LANGS:
+        # POZOR: t je tu ešte naviazané na posledný jazyk hlavnej slučky,
+        # preto si texty ťaháme priamo pre práve generovaný jazyk
+        t404 = T[lang]
         render(lang, "page.html", "404.html", page="",
                canonical="/404.html", alternates=alternates_for("home"),
                title={"sk": "Stránka sa nenašla", "en": "Page not found", "de": "Seite nicht gefunden"}[lang] + " | GelaVit",
-               description="404",
+               description=meta(t404["meta_404"]),
                heading={"sk": "Stránka sa nenašla", "en": "Page not found", "de": "Seite nicht gefunden"}[lang],
                body={"sk": '<p>Táto stránka neexistuje alebo bola presunutá. Skúste <a href="produkty.html">produkty</a>, <a href="blog.html">blog</a> alebo <a href="kontakt.html">kontakt</a>.</p>',
                      "en": '<p>This page does not exist or has moved. Try <a href="products.html">products</a>, the <a href="blog.html">blog</a> or <a href="contact.html">contact</a>.</p>',

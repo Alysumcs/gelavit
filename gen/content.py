@@ -491,14 +491,21 @@ def posts_for(lang):
 
 
 # ========================================================= PRÁVNE STRÁNKY ====
+def strip_notice(html_text):
+    """Vyhodí odsek s triedou notice (interné upozornenie)."""
+    return re.sub(r'<p class="notice">.*?</p>', "", html_text, flags=re.S)
+
+
 def legal(key, lang, T, URLS, DIR):
     t = T[lang]
     u = URLS[lang]
     if key == "howto":
-        return HOWTO[lang].replace("{products}", u["products"]).replace("{terms}", u["terms"]), t["nav_howto"]
-    if key == "terms":
-        return TERMS[lang], t["nav_terms"]
-    return PRIVACY[lang], t["nav_privacy"]
+        body = HOWTO[lang].replace("{products}", u["products"]).replace("{terms}", u["terms"])
+        return body, t["nav_howto"]
+    body = TERMS[lang] if key == "terms" else PRIVACY[lang]
+    if not SHOW_LEGAL_NOTICE:
+        body = strip_notice(body)
+    return body, (t["nav_terms"] if key == "terms" else t["nav_privacy"])
 
 
 HOWTO = {"sk": """
@@ -612,6 +619,11 @@ Innerhalb weniger Minuten erhalten Sie eine Bestätigung mit Übersicht und Zahl
 <a href="tel:+421915178349">+421 915 178 349</a> an, Mo–Fr 9:00–16:00.</p>
 """}
 
+
+# Upozornenie na vrchu právnych stránok. Je to odkaz pre teba, nie pre
+# zákazníka — keď texty prejde právnik, prepni na False a upozornenie
+# zmizne zo všetkých troch jazykov naraz.
+SHOW_LEGAL_NOTICE = True
 
 _TERMS_NOTE = {
     "sk": "<p class=\"notice\">Tento dokument je prevzatý z pôvodného webu gelavit.sk a skrátený do prehľadnejšej podoby. Pred spustením e-shopu ho dajte skontrolovať právnikovi — najmä články o odstúpení od zmluvy, reklamáciách a alternatívnom riešení sporov, ktoré sa od roku 2022 menili.</p>",
