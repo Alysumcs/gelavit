@@ -492,3 +492,32 @@ Nameraný pomer hero : sekcia po úprave:
 
 To isté platí pre produkt: tvar v hero má pri 1440 × 900 **540 px**,
 kým v sekcii 03 **480 px**. Hero teda vedie aj obrazom, nielen textom.
+
+
+## Hero: produkty sa striedajú samy
+
+Scéna má teraz dva pohony naraz:
+
+1. **Časovač** — každých 3,8 s prepne na ďalší produkt. Beží aj bez toho,
+   aby návštevník čokoľvek robil, a aj na mobile, kde scéna nie je pripnutá.
+2. **Rolovanie** — kým sa roluje, vedie rolovanie a časovač sa na 2,6 s
+   pozastaví. Po zastavení sa automat rozbehne znova.
+
+Aby si tie dva pohony neskákali do cesty, scroll-driven vetva prepisuje
+index **len keď sa poloha naozaj zmenila** (`Math.abs(y - lastY) < 0.5`
+inak vráti). Bez toho by rolovací handler pri každom snímku prevalcoval to,
+čo práve prepol časovač, a produkty by sa zasekli.
+
+Automat sa pozastaví aj keď je kurzor nad scénou, keď je karta prehliadača
+na pozadí (`visibilitychange`) a keď je scéna mimo obrazovky. Pri
+`prefers-reduced-motion` sa nespustí vôbec.
+
+Interval sa mení konštantou `AUTO_MS` v `heroScene()` v `motion.js`,
+oneskorenie po rolovaní konštantou `RESUME_MS`.
+
+### Veľkosť produktu
+
+Tvar s produktom je viazaný na výšku okna: `min(720px, 64vh)`. Pri
+1440 × 900 to je **576 px** — proti pôvodným 414 px je to o 39 % viac.
+Miesto naň sa uvoľnilo zmenšením spodnej rezervy pripnutia, keďže pätka
+scény je ukotvená absolútne a v toku nezaberá nič.
